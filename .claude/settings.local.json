@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//usr/bin/**)",
+      "Read(//usr/local/**)",
+      "Read(//opt/homebrew/**)",
+      "Bash(ls /usr/bin/python* /usr/local/bin/python* /opt/homebrew/bin/python*)",
+      "Bash(command -v ruby)",
+      "Bash(command -v php)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(mkdir -p /tmp/survey_serve)",
+      "Bash(cp \"/Users/timmeniere/Desktop/Claude/survey google form/index.html\" /tmp/survey_serve/index.html)",
+      "WebSearch",
+      "WebFetch(domain:overpass-api.de)"
+    ]
+  }
+}

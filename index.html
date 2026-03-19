@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Immobilier Thaïlande 🇹🇭</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --dark:#15131F;
+  --dark2:#221F32;
+  --gold:#C49B45;
+  --gold-l:#E8C97A;
+  --gold-bg:rgba(196,155,69,.12);
+  --bg:#F4F2EC;
+  --card:#FFFFFF;
+  --txt:#15131F;
+  --muted:#7A7688;
+  --border:#E6E2D8;
+  --ok:#10B981;
+  --r:14px;
+}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;display:flex;justify-content:center}
+.wrap{width:100%;max-width:480px;min-height:100vh;background:var(--card);display:flex;flex-direction:column}
+
+/* ── HEADER ─────────────────────────────────────────────── */
+.hdr{
+  background:var(--dark);
+  padding:44px 28px 38px;
+  color:#fff;
+  position:relative;overflow:hidden;flex-shrink:0;
+}
+.hdr::before{
+  content:'';position:absolute;top:-80px;right:-80px;
+  width:280px;height:280px;
+  border-radius:50%;
+  border:60px solid rgba(196,155,69,.08);
+}
+.hdr::after{
+  content:'';position:absolute;bottom:-40px;left:-40px;
+  width:180px;height:180px;
+  border-radius:50%;
+  border:40px solid rgba(196,155,69,.05);
+}
+.hdr-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--gold-bg);color:var(--gold);
+  padding:5px 12px;border-radius:20px;
+  font-size:11px;font-weight:700;letter-spacing:.04em;
+  text-transform:uppercase;margin-bottom:18px;
+  border:1px solid rgba(196,155,69,.25);
+}
+.hdr h1{font-size:26px;font-weight:900;line-height:1.2;margin-bottom:10px}
+.hdr p{font-size:13px;line-height:1.65;color:rgba(255,255,255,.62)}
+.hdr-dot{display:inline-block;width:5px;height:5px;background:var(--gold);border-radius:50%;margin:0 6px;vertical-align:middle}
+
+/* ── PROGRESS ────────────────────────────────────────────── */
+.prog-wrap{background:var(--dark);padding:0 24px 20px;flex-shrink:0}
+.prog-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.prog-label{font-size:11px;font-weight:700;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.06em}
+.prog-counter{font-size:12px;font-weight:800;color:var(--gold)}
+.prog-track{height:4px;background:rgba(255,255,255,.12);border-radius:4px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-l));border-radius:4px;transition:width .45s cubic-bezier(.4,0,.2,1);width:0%}
+
+/* ── STEPS ───────────────────────────────────────────────── */
+.steps-wrap{flex:1;display:flex;flex-direction:column}
+.step{display:none;padding:32px 24px 16px;animation:fi .22s ease}
+.step.active{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.qlabel{
+  font-size:11px;font-weight:700;color:var(--gold);
+  text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;
+}
+.qtitle{font-size:22px;font-weight:900;line-height:1.25;margin-bottom:6px;color:var(--dark)}
+.qdesc{font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.5}
+.opt-badge{
+  display:inline-block;background:rgba(196,155,69,.12);color:var(--gold);
+  font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;
+  margin-left:6px;vertical-align:middle;
+  border:1px solid rgba(196,155,69,.25);
+}
+
+/* ── CARDS ───────────────────────────────────────────────── */
+.grid{display:grid;gap:10px}
+.grid.c2{grid-template-columns:1fr 1fr}
+
+.card{
+  border:none;border-radius:var(--r);padding:16px 18px;
+  cursor:pointer;user-select:none;
+  background:#fff;
+  display:flex;align-items:center;gap:14px;
+  box-shadow:0 0 0 1.5px var(--border),0 2px 8px rgba(21,19,31,.04);
+  transition:box-shadow .18s,transform .18s,background .18s;
+}
+.card:hover{
+  box-shadow:0 0 0 2px var(--gold),0 4px 16px rgba(196,155,69,.12);
+  transform:translateY(-1px);
+}
+.card.sel{
+  background:var(--dark);
+  box-shadow:0 0 0 2px var(--dark),0 6px 20px rgba(21,19,31,.18);
+  color:#fff;
+}
+.card .chk{
+  width:22px;height:22px;border-radius:50%;
+  background:var(--bg);
+  border:2px solid var(--border);
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:800;transition:all .18s;
+}
+.card.sel .chk{background:var(--gold);border-color:var(--gold);color:var(--dark)}
+.card.sel .chk::after{content:'✓'}
+.card-icon{font-size:22px;flex-shrink:0}
+.card-txt{font-size:15px;font-weight:700;color:var(--txt)}
+.card-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.card.sel .card-txt{color:#fff}
+.card.sel .card-sub{color:rgba(255,255,255,.55)}
+
+/* ── BIG CHOICE CARDS ────────────────────────────────────── */
+.grid.big{grid-template-columns:1fr 1fr}
+.bigcard{
+  padding:24px 16px;border-radius:18px;cursor:pointer;user-select:none;
+  text-align:center;background:#fff;
+  box-shadow:0 0 0 1.5px var(--border),0 2px 8px rgba(21,19,31,.04);
+  transition:all .2s;
+}
+.bigcard:hover{
+  box-shadow:0 0 0 2px var(--gold),0 6px 20px rgba(196,155,69,.12);
+  transform:translateY(-2px);
+}
+.bigcard.sel{
+  background:var(--dark);
+  box-shadow:0 0 0 2px var(--dark),0 8px 28px rgba(21,19,31,.22);
+  transform:translateY(-2px);
+}
+.bigcard .bi{font-size:40px;margin-bottom:12px;display:block}
+.bigcard .bt{font-size:17px;font-weight:800;margin-bottom:3px;color:var(--dark)}
+.bigcard .bs{font-size:12px;color:var(--muted)}
+.bigcard.sel .bt{color:#fff}
+.bigcard.sel .bs{color:rgba(255,255,255,.5)}
+
+/* ── SLIDER ──────────────────────────────────────────────── */
+.slider-box{margin:0 0 22px}
+.slider-disp{text-align:center;margin-bottom:20px;padding:20px;background:var(--bg);border-radius:var(--r)}
+.slider-disp .amt{font-size:34px;font-weight:900;color:var(--dark)}
+.slider-disp .unit{font-size:14px;color:var(--muted);margin-left:3px}
+.slider-disp .eq{font-size:13px;color:var(--gold);margin-top:4px;font-weight:600}
+input[type=range]{width:100%;-webkit-appearance:none;height:5px;border-radius:3px;background:var(--border);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:var(--dark);border:3px solid var(--gold);cursor:pointer;transition:transform .1s}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.1)}
+.slider-ends{display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:var(--muted)}
+
+/* ── MAP ─────────────────────────────────────────────────── */
+#bkk-map{
+  height:360px;border-radius:14px;overflow:hidden;
+  margin-bottom:16px;
+  box-shadow:0 0 0 1.5px var(--border),0 4px 20px rgba(21,19,31,.08);
+}
+.leaflet-tooltip.hlabel{
+  background:transparent!important;border:none!important;
+  box-shadow:none!important;padding:0!important;
+  color:rgba(20,10,50,.9);
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-weight:800;font-size:11.5px;line-height:1.35;
+  text-align:center;white-space:nowrap;
+  text-shadow:0 0 4px #fff,0 0 8px #fff,0 0 12px rgba(255,255,255,.8);
+  pointer-events:none!important;
+}
+.leaflet-tooltip.hlabel::before{display:none!important}
+.leaflet-control-attribution{font-size:9px!important;opacity:.6}
+
+/* ── TAGS ────────────────────────────────────────────────── */
+.tags{display:flex;flex-wrap:wrap;gap:8px;min-height:28px;margin-top:12px;align-items:center}
+.tag{
+  padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;
+  display:flex;align-items:center;gap:5px;color:#15131F;
+  border:1.5px solid rgba(0,0,0,.12);
+}
+.tag button{background:none;border:none;cursor:pointer;font-size:14px;line-height:1;padding:0;opacity:.5;color:inherit}
+.no-sel{font-size:13px;color:var(--muted);font-style:italic}
+
+/* ── TEXT INPUTS ─────────────────────────────────────────── */
+input[type=text],input[type=tel],input[type=date],textarea{
+  width:100%;padding:15px 18px;
+  border:none;border-radius:var(--r);
+  font-size:15px;color:var(--txt);
+  background:var(--bg);outline:none;
+  transition:box-shadow .18s;font-family:inherit;
+  box-shadow:0 0 0 1.5px var(--border);
+}
+input:focus,textarea:focus{box-shadow:0 0 0 2px var(--gold)}
+textarea{min-height:110px;resize:vertical}
+.ilabel{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;display:block}
+.igroup{margin-bottom:16px}
+
+/* ── NAV ─────────────────────────────────────────────────── */
+.nav{
+  display:flex;gap:10px;padding:16px 24px 34px;
+  background:#fff;
+  border-top:1px solid var(--border);
+  flex-shrink:0;position:sticky;bottom:0;z-index:1000;
+}
+.btn{border:none;border-radius:var(--r);font-size:15px;font-weight:800;cursor:pointer;transition:all .18s;padding:15px;letter-spacing:.01em}
+.btn-p{
+  flex:1;
+  background:var(--dark);color:#fff;
+  box-shadow:0 4px 16px rgba(21,19,31,.2);
+}
+.btn-p:hover{background:var(--dark2);box-shadow:0 6px 22px rgba(21,19,31,.3)}
+.btn-p:active{transform:scale(.98)}
+.btn-p:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
+.btn-s{background:var(--bg);color:var(--muted);width:52px;flex-shrink:0;box-shadow:0 0 0 1.5px var(--border)}
+.btn-s:disabled{opacity:.3;cursor:not-allowed}
+
+/* ── SUCCESS ─────────────────────────────────────────────── */
+.success{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:80vh;padding:40px 28px;text-align:center}
+.success.active{display:flex}
+.s-icon{
+  width:84px;height:84px;
+  background:var(--dark);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:36px;margin-bottom:24px;
+  border:3px solid var(--gold);
+  box-shadow:0 0 0 8px var(--gold-bg);
+}
+.success h2{font-size:26px;font-weight:900;margin-bottom:10px;color:var(--dark)}
+.success p{font-size:15px;color:var(--muted);line-height:1.65}
+.wa-btn{
+  margin-top:28px;display:inline-flex;align-items:center;gap:10px;
+  background:#25D366;color:#fff;padding:16px 28px;
+  border-radius:var(--r);font-size:15px;font-weight:800;
+  text-decoration:none;
+  box-shadow:0 4px 18px rgba(37,211,102,.32);
+  transition:transform .18s;
+}
+.wa-btn:hover{transform:translateY(-1px)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-badge">🇹🇭 Thaïlande · Depuis 2 ans</div>
+  <h1>Trouvons ton<br>bien idéal</h1>
+  <p style="margin-top:12px">Agent et investisseur immobilier à Bangkok.<span class="hdr-dot"></span>2 min pour que je te réponde précisément.</p>
+</div>
+<div class="prog-wrap" id="progWrap">
+  <div class="prog-top">
+    <span class="prog-label" id="progLabel">Démarrer</span>
+    <span class="prog-counter" id="progCounter"></span>
+  </div>
+  <div class="prog-track"><div class="prog-fill" id="pf"></div></div>
+</div>
+
+<!-- STEPS -->
+<div class="steps-wrap" id="sw">
+
+<!-- 0 -->
+<div class="step active" id="s0">
+  <div class="qlabel">Pour commencer</div>
+  <div class="qtitle">Quel est votre projet ?</div>
+  <div class="qdesc">Sélectionnez ce qui correspond le mieux à votre situation</div>
+  <div class="grid big">
+    <div class="bigcard" id="bc-louer" onclick="pickType('louer')">
+      <span class="bi">🔑</span><div class="bt">Louer</div><div class="bs">Location longue ou courte durée</div>
+    </div>
+    <div class="bigcard" id="bc-acheter" onclick="pickType('acheter')">
+      <span class="bi">🏠</span><div class="bt">Acheter</div><div class="bs">Investissement ou résidence principale</div>
+    </div>
+  </div>
+</div>
+
+<!-- 1 -->
+<div class="step" id="s1">
+  <div class="qlabel">Question 1 / <span class="tot"></span></div>
+  <div class="qtitle">Où êtes-vous actuellement ?</div>
+  <div class="grid" style="margin-top:4px">
+    <div class="card" onclick="pick1(this,'loc')"><div class="chk"></div><span class="card-icon">✈️</span><div><div class="card-txt">À l'étranger</div><div class="card-sub">Je prépare mon projet depuis chez moi</div></div></div>
+    <div class="card" onclick="pick1(this,'loc')"><div class="chk"></div><span class="card-icon">🌴</span><div><div class="card-txt">En Thaïlande</div><div class="card-sub">Je suis déjà sur place</div></div></div>
+  </div>
+</div>
+
+<!-- 2 -->
+<div class="step" id="s2">
+  <div class="qlabel">Question 2 / <span class="tot"></span></div>
+  <div class="qtitle">Quel type de bien ?</div>
+  <div class="grid" style="margin-top:4px">
+    <div class="card" onclick="pick1(this,'type')"><div class="chk"></div><span class="card-icon">🏢</span><div><div class="card-txt">Condo / Appartement</div></div></div>
+    <div class="card" onclick="pick1(this,'type')"><div class="chk"></div><span class="card-icon">🏡</span><div><div class="card-txt">Maison / Villa</div></div></div>
+    <div class="card" onclick="pick1(this,'type')"><div class="chk"></div><span class="card-icon">🏪</span><div><div class="card-txt">Bien commercial / Autre</div></div></div>
+  </div>
+</div>
+
+<!-- 3 -->
+<div class="step" id="s3">
+  <div class="qlabel">Question 3 / <span class="tot"></span></div>
+  <div class="qtitle">Dans quelle ville ?</div>
+  <div class="grid" style="margin-top:4px">
+    <div class="card" onclick="pick1(this,'ville',true)"><div class="chk"></div><span class="card-icon">🏙️</span><div><div class="card-txt">Bangkok</div></div></div>
+    <div class="card" onclick="pick1(this,'ville',false)"><div class="chk"></div><span class="card-icon">🏖️</span><div><div class="card-txt">Pattaya</div></div></div>
+    <div class="card" onclick="pick1(this,'ville',false)"><div class="chk"></div><span class="card-icon">🌊</span><div><div class="card-txt">Phuket</div></div></div>
+    <div class="card" onclick="pick1(this,'ville',false)"><div class="chk"></div><span class="card-icon">🗺️</span><div><div class="card-txt">Autre / Pas encore décidé</div></div></div>
+  </div>
+</div>
+
+<!-- 4 -->
+<div class="step" id="s4">
+  <div class="qlabel">Question 4 / <span class="tot"></span></div>
+  <div class="qtitle">Nombre de chambres ?</div>
+  <div class="grid c2" style="margin-top:4px">
+    <div class="card" onclick="pick1(this,'ch')"><div class="chk"></div><div><div class="card-txt" style="font-size:20px;font-weight:900">Studio</div><div class="card-sub">1 pièce</div></div></div>
+    <div class="card" onclick="pick1(this,'ch')"><div class="chk"></div><div><div class="card-txt" style="font-size:20px;font-weight:900">1</div><div class="card-sub">chambre</div></div></div>
+    <div class="card" onclick="pick1(this,'ch')"><div class="chk"></div><div><div class="card-txt" style="font-size:20px;font-weight:900">2</div><div class="card-sub">chambres</div></div></div>
+    <div class="card" onclick="pick1(this,'ch')"><div class="chk"></div><div><div class="card-txt" style="font-size:20px;font-weight:900">3</div><div class="card-sub">chambres</div></div></div>
+    <div class="card" onclick="pick1(this,'ch')" style="grid-column:span 2"><div class="chk"></div><div><div class="card-txt" style="font-size:20px;font-weight:900">4+</div><div class="card-sub">chambres ou plus</div></div></div>
+  </div>
+</div>
+
+<!-- 5 -->
+<div class="step" id="s5">
+  <div class="qlabel">Question 5 / <span class="tot"></span></div>
+  <div class="qtitle" id="bq">Budget mensuel ?</div>
+  <div class="qdesc">Glissez pour ajuster votre fourchette</div>
+  <div class="slider-box">
+    <div class="slider-disp">
+      <div><span class="amt" id="bamt">฿30 000</span><span class="unit" id="bunit">/mois</span></div>
+      <div class="eq" id="beq">≈ 900 €</div>
+    </div>
+    <input type="range" id="bslider" min="20000" max="300000" step="1000" value="50000" oninput="onSlider(this.value)">
+    <div class="slider-ends"><span id="bmin">฿20 000</span><span id="bmax">฿300 000+</span></div>
+  </div>
+</div>
+
+<!-- 6 -->
+<div class="step" id="s6">
+  <div class="qlabel">Question 6 / <span class="tot"></span></div>
+  <div class="qtitle">À partir de quand ?</div>
+  <div class="qdesc">Date souhaitée d'entrée dans le logement</div>
+  <input type="date" id="ddate" onchange="refreshNav()">
+</div>
+
+<!-- 7 -->
+<div class="step" id="s7">
+  <div class="qlabel">Question 7 / <span class="tot"></span></div>
+  <div class="qtitle">Durée du contrat ?</div>
+  <div class="grid" style="margin-top:4px">
+    <div class="card" onclick="pick1(this,'dur')"><div class="chk"></div><div class="card-txt">1 an</div></div>
+    <div class="card" onclick="pick1(this,'dur')"><div class="chk"></div><div class="card-txt">6 mois</div></div>
+    <div class="card" onclick="pick1(this,'dur')"><div class="chk"></div><div class="card-txt">3 mois</div></div>
+    <div class="card" onclick="pick1(this,'dur')"><div class="chk"></div><div class="card-txt">Autre</div></div>
+  </div>
+</div>
+
+<!-- 8: CARTE -->
+<div class="step" id="s8">
+  <div class="qlabel">Question <span id="q8n">8</span> / <span class="tot"></span><span class="opt-badge">Optionnel</span></div>
+  <div class="qtitle">Quartiers qui vous intéressent ?</div>
+  <div class="qdesc">Touchez les zones sur la carte pour les sélectionner</div>
+  <div id="bkk-map"></div>
+  <div class="tags" id="tags"><span class="no-sel" id="nosel">Aucun quartier sélectionné</span></div>
+  <div style="margin-top:14px">
+    <div class="card" id="c-dk" onclick="toggleDK()">
+      <div class="chk"></div>
+      <div class="card-txt">Je ne sais pas encore, j'ai besoin de conseils</div>
+    </div>
+  </div>
+</div>
+
+<!-- 9 -->
+<div class="step" id="s9">
+  <div class="qlabel">Question <span id="q9n">9</span> / <span class="tot"></span><span class="opt-badge">Optionnel</span></div>
+  <div class="qtitle">Autres critères ?</div>
+  <div class="qdesc">Piscine, gym, parking, animaux, accès BTS direct…</div>
+  <textarea id="criteres" placeholder="Ex : j'ai un chien, budget flexible si le bien est exceptionnel, besoin d'un parking couvert…"></textarea>
+</div>
+
+<!-- 10 -->
+<div class="step" id="s10">
+  <div class="qlabel">Dernière étape</div>
+  <div class="qtitle">Vos coordonnées</div>
+  <div class="qdesc">Pour vous recontacter rapidement sur WhatsApp</div>
+  <div class="igroup"><label class="ilabel">Nom et prénom</label><input type="text" id="nom" placeholder="Thomas Dupont" oninput="refreshNav()"></div>
+  <div class="igroup"><label class="ilabel">Téléphone / WhatsApp</label><input type="tel" id="tel" placeholder="+33 6 12 34 56 78" oninput="refreshNav()"></div>
+</div>
+
+<!-- SUCCESS -->
+<div class="success" id="suc">
+  <div class="s-icon">✓</div>
+  <h2>C'est envoyé !</h2>
+  <p>Je reviens vers toi très vite sur WhatsApp pour qu'on construise ton projet ensemble.</p>
+  <p style="margin-top:12px;font-size:13px;color:var(--muted)">— Tim 🇹🇭</p>
+  <a id="wa-link" class="wa-btn" href="#" target="_blank">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    Ouvrir WhatsApp
+  </a>
+</div>
+
+</div>
+
+<!-- NAV -->
+<div class="nav" id="nav">
+  <button class="btn btn-s" id="btnP" onclick="prev()" disabled>←</button>
+  <button class="btn btn-p" id="btnN" onclick="next()" disabled>Commencer</button>
+</div>
+
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const WA_NUMBER = "66XXXXXXXXX"; // ← Ton numéro sans + (ex: 66812345678)
+
+// Zones cartographiques Bangkok — sans chevauchement
+// Frontières partagées exactes entre zones adjacentes
+// Coordonnées : [longitude, latitude] format GeoJSON
+const HOODS_GEO = {
+  type:'FeatureCollection',
+  features:[
+    // ── SILOM / SATHORN ── (sud, axe diagonal Silom Road)
+    { type:'Feature',
+      properties:{id:'silom',name:'Silom / Sathorn',sub:'CBD · Sala Daeng',color:'#FCA5A5',border:'#DC2626'},
+      geometry:{type:'Polygon',coordinates:[[
+        [100.493,13.706],[100.508,13.699],[100.521,13.695],[100.535,13.694],
+        [100.547,13.698],[100.556,13.707],[100.558,13.718],[100.557,13.726],
+        [100.538,13.725],[100.518,13.726],[100.502,13.721],[100.493,13.714],
+        [100.493,13.706]
+      ]]}
+    },
+    // ── CHIT LOM / SIAM ── (centre, Ratchaprasong/Pathum Wan)
+    { type:'Feature',
+      properties:{id:'chitlom',name:'Chit Lom / Siam',sub:'Siam · Ratchaprasong',color:'#C4B5FD',border:'#7C3AED'},
+      geometry:{type:'Polygon',coordinates:[[
+        [100.506,13.730],[100.521,13.732],[100.537,13.731],[100.554,13.730],
+        [100.554,13.758],
+        [100.538,13.761],[100.522,13.762],[100.510,13.758],
+        [100.503,13.747],[100.504,13.737],[100.506,13.730]
+      ]]}
+    },
+    // ── ARI ── (nord, Phaya Thai / Phahonyothin)
+    { type:'Feature',
+      properties:{id:'ari',name:'Ari',sub:'Saphan Khwai',color:'#93C5FD',border:'#2563EB'},
+      geometry:{type:'Polygon',coordinates:[[
+        [100.510,13.758],[100.522,13.762],[100.538,13.761],[100.554,13.758],
+        [100.554,13.810],
+        [100.540,13.817],[100.524,13.818],[100.508,13.814],[100.498,13.803],
+        [100.493,13.788],[100.495,13.771],[100.502,13.762],[100.510,13.758]
+      ]]}
+    },
+    // ── LAT PHRAO ── (nord-est, le long de Lat Phrao Road)
+    { type:'Feature',
+      properties:{id:'latphrao',name:'Lat Phrao',sub:'MRT Lat Phrao',color:'#FBB6CE',border:'#DB2777'},
+      geometry:{type:'Polygon',coordinates:[[
+        [100.554,13.758],[100.554,13.810],
+        [100.558,13.822],[100.564,13.840],[100.572,13.850],
+        [100.586,13.856],[100.602,13.858],[100.618,13.856],
+        [100.632,13.848],[100.642,13.832],[100.644,13.814],
+        [100.638,13.796],[100.624,13.772],[100.608,13.762],
+        [100.588,13.758],[100.570,13.757],[100.554,13.758]
+      ]]}
+    },
+    // ── ASOKE ── (Sukhumvit 21, jonction Asoke)
+    { type:'Feature',
+      properties:{id:'asoke',name:'Asoke',sub:'Nana · Sukhumvit 21',color:'#F9A8D4',border:'#BE185D'},
+      geometry:{type:'Polygon',coordinates:[[
+        [100.554,13.730],[100.568,13.728],[100.578,13.727],
+        [100.578,13.754],[100.566,13.758],[100.554,13.758],
+        [100.554,13.730]
+      ]]}
+    },
+    // ── PHROM PONG ── (Emporium, Sukhumvit 39)
+    { type:'Feature',
+      properties:{id:'phrom',name:'Phrom Pong',sub:'Sukhumvit 39',color:'#FDE68A',border:'#D97706'},
+      geometry:{type:'Polygon',coordinates:[[
+        [100.578,13.721],[100.588,13.719],[100.596,13.718],
+        [100.596,13.748],[100.584,13.752],[100.578,13.754],
+        [100.578,13.721]
+      ]]}
+    },
+    // ── THONGLOR ── (Sukhumvit 55 / Ekkamai)
+    { type:'Feature',
+      properties:{id:'thong',name:'Thonglor',sub:'Ekkamai',color:'#6EE7B7',border:'#059669'},
+      geometry:{type:'Polygon',coordinates:[[
+        [100.596,13.714],[100.606,13.712],[100.616,13.712],
+        [100.616,13.742],[100.604,13.746],[100.596,13.748],
+        [100.596,13.714]
+      ]]}
+    },
+    // ── ON NUT ── (Sukhumvit 77, Bearing)
+    { type:'Feature',
+      properties:{id:'onnut',name:'On Nut',sub:'Bearing',color:'#A5F3FC',border:'#0891B2'},
+      geometry:{type:'Polygon',coordinates:[[
+        [100.616,13.695],[100.628,13.690],[100.642,13.692],[100.650,13.700],
+        [100.648,13.720],[100.640,13.730],[100.628,13.738],[100.616,13.742],
+        [100.616,13.695]
+      ]]}
+    }
+  ]
+}
+
+// Dérivé pour la compatibilité avec le reste du code (tags, couleurs…)
+const HOODS = HOODS_GEO.features.map(f=>f.properties);
+
+// ── BTS Lines (coordonnées réelles des stations) ────────────
+const BTS_SUKHUMVIT = [
+  [13.8023,100.5526], // Mo Chit
+  [13.7921,100.5448], // Saphan Khwai
+  [13.7756,100.5404], // Ari
+  [13.7648,100.5374], // Sanam Pao
+  [13.7555,100.5350], // Victory Monument
+  [13.7498,100.5336], // Phaya Thai
+  [13.7461,100.5341], // Ratchathewi
+  [13.7461,100.5341], // Siam (interchange)
+  [13.7443,100.5492], // Chit Lom
+  [13.7413,100.5565], // Phloen Chit
+  [13.7381,100.5619], // Nana
+  [13.7369,100.5604], // Asok
+  [13.7303,100.5697], // Phrom Phong
+  [13.7255,100.5793], // Thong Lo
+  [13.7202,100.5861], // Ekkamai
+  [13.7117,100.5946], // Phra Khanong
+  [13.7025,100.6008], // On Nut
+];
+const BTS_SILOM = [
+  [13.7459,100.5291], // National Stadium
+  [13.7461,100.5341], // Siam (interchange)
+  [13.7282,100.5327], // Sala Daeng
+  [13.7228,100.5271], // Chong Nonsi
+  [13.7165,100.5253], // Saint Louis
+  [13.7136,100.5230], // Surasak
+  [13.7187,100.5142], // Saphan Taksin
+];
+// Stations clés à afficher
+const BTS_STATIONS = [
+  {pos:[13.7756,100.5404], name:'Ari'},
+  {pos:[13.7443,100.5492], name:'Chit Lom'},
+  {pos:[13.7461,100.5341], name:'Siam'},
+  {pos:[13.7369,100.5604], name:'Asok'},
+  {pos:[13.7303,100.5697], name:'Phrom Phong'},
+  {pos:[13.7255,100.5793], name:'Thong Lo'},
+  {pos:[13.7282,100.5327], name:'Sala Daeng'},
+  {pos:[13.7025,100.6008], name:'On Nut'},
+];
+
+// ── BUDGET CONFIG ────────────────────────────────────────────
+const BUDGET_CONF={
+  louer:   {min:20000,  max:300000,   step:1000,   def:50000},
+  acheter: {min:500000, max:25000000, step:100000, def:5000000}
+};
+
+function fmtThb(n){
+  return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,' ');
+}
+function fmtEur(thb){
+  const eur=Math.round(thb/37);
+  const step=eur<5000?50:eur<30000?200:eur<100000?1000:5000;
+  const rounded=Math.round(eur/step)*step;
+  return '≈ '+rounded.toString().replace(/\B(?=(\d{3})+(?!\d))/g,' ')+' €';
+}
+
+// ── STATE ────────────────────────────────────────────────────
+let type=null,bkk=false,bVal=30000;
+let zones=[],dontKnow=false,si=0;
+let leafletMap=null,hoodLayers={},mapInited=false;
+
+function steps(){
+  const s=[0,1,2,3,4,5];
+  if(type==='louer') s.push(6,7);
+  if(bkk) s.push(8);
+  s.push(9,10);
+  return s;
+}
+function totalSteps(){ return steps().length - 1; } // exclude intro
+
+// ── MAP ──────────────────────────────────────────────────────
+function initMap(){
+  if(mapInited){ setTimeout(()=>leafletMap.invalidateSize(),80); return; }
+  mapInited=true;
+
+  leafletMap=L.map('bkk-map',{scrollWheelZoom:false,tap:true,attributionControl:true,zoomControl:true});
+
+  // CartoDB Positron — épuré comme Google Maps light
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
+    attribution:'© <a href="https://openstreetmap.org/copyright">OSM</a> © <a href="https://carto.com">CARTO</a>',
+    subdomains:'abcd',maxZoom:19
+  }).addTo(leafletMap);
+
+  // ── BTS SUKHUMVIT (bleu) ──
+  L.polyline(BTS_SUKHUMVIT,{color:'#2563EB',weight:4,opacity:.85,lineJoin:'round'}).addTo(leafletMap);
+  // ── BTS SILOM (vert) ──
+  L.polyline(BTS_SILOM,{color:'#16A34A',weight:4,opacity:.85,lineJoin:'round'}).addTo(leafletMap);
+
+  // ── STATIONS ──
+  BTS_STATIONS.forEach(s=>{
+    L.circleMarker(s.pos,{
+      radius:5,fillColor:'#fff',fillOpacity:1,
+      color:'#1e40af',weight:2,interactive:false
+    }).addTo(leafletMap);
+  });
+
+  // ── ZONES CLIQUABLES (GeoJSON) ──
+  L.geoJSON(HOODS_GEO,{
+    style: feature=>({
+      color: feature.properties.border,
+      weight: 1.5,
+      fillColor: feature.properties.color,
+      fillOpacity: 0.48,
+      opacity: 0.9
+    }),
+    onEachFeature: (feature,layer)=>{
+      const h=feature.properties;
+      layer.bindTooltip(
+        `<div style="text-align:center"><strong>${h.name}</strong><br><span class="sub" style="font-size:9.5px;font-weight:600;opacity:.7">${h.sub}</span></div>`,
+        {permanent:true,direction:'center',className:'hlabel',interactive:false}
+      );
+      layer.on('mouseover',()=>{ if(!zones.includes(h.id)) layer.setStyle({fillOpacity:.70,weight:2.5}); });
+      layer.on('mouseout',()=>{ if(!zones.includes(h.id)) layer.setStyle({fillOpacity:.48,weight:1.5}); });
+      layer.on('click',()=>toggleZone(h.id));
+      hoodLayers[h.id]=layer;
+    }
+  }).addTo(leafletMap);
+
+  // Auto-zoom sur tous les quartiers
+  const allCoords=HOODS_GEO.features.flatMap(f=>f.geometry.coordinates[0].map(c=>[c[1],c[0]]));
+  leafletMap.fitBounds(allCoords,{padding:[20,20]});
+}
+
+// ── ZONE TOGGLE ──────────────────────────────────────────────
+function toggleZone(id){
+  if(dontKnow) return;
+  const h=HOODS.find(x=>x.id===id), layer=hoodLayers[id];
+  const i=zones.indexOf(id);
+  if(i===-1){
+    zones.push(id);
+    layer.setStyle({fillOpacity:.82,weight:3,color:h.border});
+    layer.bringToFront();
+  } else {
+    zones.splice(i,1);
+    layer.setStyle({fillOpacity:.48,weight:1.5,color:h.border});
+  }
+  renderTags();
+}
+
+function getZoneNames(){ return zones.map(id=>HOODS.find(h=>h.id===id)?.name).filter(Boolean); }
+
+function renderTags(){
+  const c=document.getElementById('tags');
+  c.querySelectorAll('.tag').forEach(t=>t.remove());
+  const nosel=document.getElementById('nosel');
+  if(zones.length===0&&!dontKnow){ nosel.style.display=''; return; }
+  nosel.style.display='none';
+  zones.forEach(id=>{
+    const h=HOODS.find(x=>x.id===id);
+    const d=document.createElement('div');
+    d.className='tag';
+    d.style.cssText=`background:${h.color};border-color:${h.border}`;
+    d.innerHTML=`${h.name}<button onclick="removeZone('${id}')">×</button>`;
+    c.appendChild(d);
+  });
+}
+
+function removeZone(id){
+  zones=zones.filter(z=>z!==id);
+  const h=HOODS.find(x=>x.id===id);
+  if(h&&hoodLayers[id]) hoodLayers[id].setStyle({fillOpacity:.48,weight:1.5,color:h.border});
+  renderTags();
+}
+
+function toggleDK(){
+  dontKnow=!dontKnow;
+  document.getElementById('c-dk').classList.toggle('sel',dontKnow);
+  if(dontKnow){
+    zones.forEach(id=>{ const h=HOODS.find(x=>x.id===id); if(h&&hoodLayers[id]) hoodLayers[id].setStyle({fillOpacity:.48,weight:1.5,color:h.border}); });
+    zones=[];
+    renderTags();
+    document.getElementById('nosel').style.display='none';
+    const d=document.createElement('div');
+    d.className='tag';d.id='dk-tag';
+    d.style.cssText='background:#E5E7EB;border-color:#9CA3AF;color:#374151';
+    d.textContent='Je ne sais pas encore';
+    document.getElementById('tags').appendChild(d);
+  } else {
+    document.getElementById('dk-tag')?.remove();
+    renderTags();
+  }
+}
+
+// ── BUDGET ───────────────────────────────────────────────────
+function initBudget(){
+  const conf=BUDGET_CONF[type]||BUDGET_CONF.louer;
+  const sl=document.getElementById('bslider');
+  sl.min=conf.min; sl.max=conf.max; sl.step=conf.step;
+  if(bVal<conf.min||bVal>conf.max) bVal=conf.def;
+  sl.value=bVal;
+  if(type==='louer'){
+    document.getElementById('bq').textContent='Budget mensuel ?';
+    document.getElementById('bunit').textContent='/mois';
+    document.getElementById('bmin').textContent='฿'+fmtThb(conf.min);
+    document.getElementById('bmax').textContent='฿'+fmtThb(conf.max)+'+';
+  } else {
+    document.getElementById('bq').textContent="Budget total d'achat ?";
+    document.getElementById('bunit').textContent='';
+    document.getElementById('bmin').textContent='฿'+fmtThb(conf.min);
+    document.getElementById('bmax').textContent='฿'+fmtThb(conf.max)+'+';
+  }
+  renderBudget();
+}
+
+function onSlider(v){ bVal=parseInt(v); renderBudget(); }
+
+function renderBudget(){
+  const conf=BUDGET_CONF[type]||BUDGET_CONF.louer;
+  document.getElementById('bamt').textContent='฿'+fmtThb(bVal);
+  document.getElementById('beq').textContent=fmtEur(bVal);
+  const pct=((bVal-conf.min)/(conf.max-conf.min))*100;
+  document.getElementById('bslider').style.background=
+    `linear-gradient(to right,var(--dark) 0%,var(--dark) ${pct}%,var(--border) ${pct}%,var(--border) 100%)`;
+}
+
+// ── PICKS ────────────────────────────────────────────────────
+function pickType(t){
+  type=t;
+  document.getElementById('bc-louer').classList.toggle('sel',t==='louer');
+  document.getElementById('bc-acheter').classList.toggle('sel',t==='acheter');
+  refreshNav();
+}
+
+function pick1(el,group,isBkk){
+  el.parentElement.querySelectorAll('.card').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+  if(group==='ville'){
+    bkk=!!isBkk;
+    document.getElementById('q8n').textContent=type==='louer'?'8':'6';
+    document.getElementById('q9n').textContent=type==='louer'?(bkk?'9':'8'):(bkk?'7':'6');
+  }
+  refreshNav();
+}
+
+// ── STEP LABELS ──────────────────────────────────────────────
+function updateLabels(){
+  const total=steps().length-1;
+  document.querySelectorAll('.tot').forEach(el=>el.textContent=total);
+}
+
+// ── VALIDATION ───────────────────────────────────────────────
+function valid(sid){
+  const sel=()=>document.querySelector(`#s${sid} .card.sel`)!==null;
+  switch(sid){
+    case 0: return type!==null;
+    case 1:case 2:case 3:case 4: return sel();
+    case 5: return true;
+    case 6: return document.getElementById('ddate').value!=='';
+    case 7: return sel();
+    case 8:case 9: return true;
+    case 10:
+      return document.getElementById('nom').value.trim()!==''&&
+             document.getElementById('tel').value.trim()!=='';
+  }
+  return true;
+}
+
+// ── NAV ──────────────────────────────────────────────────────
+function refreshNav(){
+  const S=steps(), sid=S[si];
+  const btnN=document.getElementById('btnN'), btnP=document.getElementById('btnP');
+  btnP.disabled=si===0;
+  btnN.disabled=!valid(sid);
+  if(si===S.length-1) btnN.textContent='Envoyer →';
+  else if(si===0) btnN.textContent='Commencer';
+  else btnN.textContent='Suivant →';
+  const pct = si===0 ? 0 : (si/(S.length-1)*100);
+  document.getElementById('pf').style.width=pct+'%';
+  // Step counter
+  const labels=['','Localisation','Type de bien','Ville','Chambres','Budget','Date','Durée','Quartiers','Critères','Coordonnées'];
+  if(si===0){
+    document.getElementById('progLabel').textContent='Démarrer';
+    document.getElementById('progCounter').textContent='';
+  } else {
+    document.getElementById('progLabel').textContent=labels[S[si]]||'';
+    document.getElementById('progCounter').textContent=`${si} / ${S.length-1}`;
+  }
+  updateLabels();
+}
+
+function showStep(idx){
+  const S=steps();
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('s'+S[idx]).classList.add('active');
+  si=idx;
+  if(S[idx]===5) initBudget();
+  if(S[idx]===8) setTimeout(initMap,60);
+  refreshNav();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function next(){ const S=steps(); if(si===S.length-1){submit();return;} showStep(si+1); }
+function prev(){ if(si===0)return; showStep(si-1); }
+
+// ── SUBMIT ───────────────────────────────────────────────────
+function submit(){
+  const q=s=>document.querySelector(`#s${s} .card.sel .card-txt`)?.textContent?.trim()||'';
+  const quartiers=dontKnow?'Je ne sais pas encore':(zones.length?getZoneNames().join(', '):'Non précisé');
+  const lines=[
+    `🇹🇭 *Nouveau formulaire*`,``,
+    `📋 *Projet :* ${type==='louer'?'Location':'Achat'}`,
+    `📍 *Localisation :* ${q(1)}`,
+    `🏢 *Type de bien :* ${q(2)}`,
+    `🗺️ *Ville :* ${q(3)}`,
+    `🛏️ *Chambres :* ${q(4)}`,
+    `💰 *Budget :* ฿${fmtThb(bVal)} (${fmtEur(bVal)})`,
+  ];
+  if(type==='louer'){
+    lines.push(`📅 *Emménagement :* ${document.getElementById('ddate').value||'Non précisé'}`);
+    lines.push(`⏱️ *Durée :* ${q(7)}`);
+  }
+  if(bkk) lines.push(`🏙️ *Quartiers :* ${quartiers}`);
+  const crit=document.getElementById('criteres').value.trim();
+  if(crit) lines.push(`📝 *Critères :* ${crit}`);
+  lines.push(``,`👤 *Nom :* ${document.getElementById('nom').value.trim()}`);
+  lines.push(`📱 *Tel/WA :* ${document.getElementById('tel').value.trim()}`);
+
+  const waHref=`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(lines.join('\n'))}`;
+
+  document.getElementById('sw').innerHTML='';
+  document.getElementById('nav').style.display='none';
+  document.getElementById('pf').style.width='100%';
+
+  const suc=document.getElementById('suc').cloneNode(true);
+  suc.classList.add('active'); suc.style.display='flex';
+  suc.querySelector('#wa-link').href=waHref;
+  document.getElementById('sw').appendChild(suc);
+}
+
+renderBudget();
+refreshNav();
+</script>
+</body>
+</html>
