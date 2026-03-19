@@ -244,7 +244,7 @@ textarea{min-height:110px;resize:vertical}
 
 <!-- HEADER -->
 <div class="hdr">
-  <div class="hdr-badge">🇹🇭 Thaïlande · Depuis 2 ans</div>
+  <div class="hdr-badge">🇹🇭 Agent immobilier · Bangkok</div>
   <h1>Trouvons ton<br>bien idéal</h1>
   <p style="margin-top:12px">Agent et investisseur immobilier à Bangkok.<span class="hdr-dot"></span>2 min pour que je te réponde précisément.</p>
 </div>
@@ -312,11 +312,11 @@ textarea{min-height:110px;resize:vertical}
   <div class="qlabel">Question 4 / <span class="tot"></span></div>
   <div class="qtitle">Nombre de chambres ?</div>
   <div class="grid c2" style="margin-top:4px">
-    <div class="card" onclick="pick1(this,'ch')"><div class="chk"></div><div><div class="card-txt" style="font-size:20px;font-weight:900">Studio</div><div class="card-sub">1 pièce</div></div></div>
-    <div class="card" onclick="pick1(this,'ch')"><div class="chk"></div><div><div class="card-txt" style="font-size:20px;font-weight:900">1</div><div class="card-sub">chambre</div></div></div>
-    <div class="card" onclick="pick1(this,'ch')"><div class="chk"></div><div><div class="card-txt" style="font-size:20px;font-weight:900">2</div><div class="card-sub">chambres</div></div></div>
-    <div class="card" onclick="pick1(this,'ch')"><div class="chk"></div><div><div class="card-txt" style="font-size:20px;font-weight:900">3</div><div class="card-sub">chambres</div></div></div>
-    <div class="card" onclick="pick1(this,'ch')" style="grid-column:span 2"><div class="chk"></div><div><div class="card-txt" style="font-size:20px;font-weight:900">4+</div><div class="card-sub">chambres ou plus</div></div></div>
+    <div class="card" onclick="pickMulti(this)"><div class="chk"></div><div><div class="card-txt" style="font-size:20px;font-weight:900">Studio</div><div class="card-sub">1 pièce</div></div></div>
+    <div class="card" onclick="pickMulti(this)"><div class="chk"></div><div><div class="card-txt" style="font-size:20px;font-weight:900">1</div><div class="card-sub">chambre</div></div></div>
+    <div class="card" onclick="pickMulti(this)"><div class="chk"></div><div><div class="card-txt" style="font-size:20px;font-weight:900">2</div><div class="card-sub">chambres</div></div></div>
+    <div class="card" onclick="pickMulti(this)"><div class="chk"></div><div><div class="card-txt" style="font-size:20px;font-weight:900">3</div><div class="card-sub">chambres</div></div></div>
+    <div class="card" onclick="pickMulti(this)" style="grid-column:span 2"><div class="chk"></div><div><div class="card-txt" style="font-size:20px;font-weight:900">4+</div><div class="card-sub">chambres ou plus</div></div></div>
   </div>
 </div>
 
@@ -389,14 +389,10 @@ textarea{min-height:110px;resize:vertical}
 
 <!-- SUCCESS -->
 <div class="success" id="suc">
-  <div class="s-icon">✓</div>
+  <img src="photo.jpg" alt="Tim" style="width:100px;height:100px;border-radius:50%;object-fit:cover;object-position:center top;margin-bottom:24px;border:3px solid var(--gold);box-shadow:0 0 0 8px var(--gold-bg)">
   <h2>C'est envoyé !</h2>
-  <p>Je reviens vers toi très vite sur WhatsApp pour qu'on construise ton projet ensemble.</p>
+  <p>Merci d'avoir rempli le formulaire, nous vous recontactons au plus vite (1-2 jours maximum)</p>
   <p style="margin-top:12px;font-size:13px;color:var(--muted)">— Tim 🇹🇭</p>
-  <a id="wa-link" class="wa-btn" href="#" target="_blank">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-    Ouvrir WhatsApp
-  </a>
 </div>
 
 </div>
@@ -412,6 +408,7 @@ textarea{min-height:110px;resize:vertical}
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const WA_NUMBER = "66XXXXXXXXX"; // ← Ton numéro sans + (ex: 66812345678)
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbznXijom1SjT0LBriHZSgYNqUIOO27zcww6qLcbRSNVP2XVvwAsFvNV97mWx-h4Rti4gw/exec";
 
 // Zones cartographiques Bangkok — sans chevauchement
 // Frontières partagées exactes entre zones adjacentes
@@ -725,6 +722,7 @@ function pickType(t){
   document.getElementById('bc-louer').classList.toggle('sel',t==='louer');
   document.getElementById('bc-acheter').classList.toggle('sel',t==='acheter');
   refreshNav();
+  setTimeout(next,280);
 }
 
 function pick1(el,group,isBkk){
@@ -735,6 +733,12 @@ function pick1(el,group,isBkk){
     document.getElementById('q8n').textContent=type==='louer'?'8':'6';
     document.getElementById('q9n').textContent=type==='louer'?(bkk?'9':'8'):(bkk?'7':'6');
   }
+  refreshNav();
+  setTimeout(next,280);
+}
+
+function pickMulti(el){
+  el.classList.toggle('sel');
   refreshNav();
 }
 
@@ -808,7 +812,7 @@ function submit(){
     `📍 *Localisation :* ${q(1)}`,
     `🏢 *Type de bien :* ${q(2)}`,
     `🗺️ *Ville :* ${q(3)}`,
-    `🛏️ *Chambres :* ${q(4)}`,
+    `🛏️ *Chambres :* ${[...document.querySelectorAll('#s4 .card.sel .card-txt')].map(e=>e.textContent.trim()).join(', ')}`,
     `💰 *Budget :* ฿${fmtThb(bVal)} (${fmtEur(bVal)})`,
   ];
   if(type==='louer'){
@@ -821,15 +825,31 @@ function submit(){
   lines.push(``,`👤 *Nom :* ${document.getElementById('nom').value.trim()}`);
   lines.push(`📱 *Tel/WA :* ${document.getElementById('tel').value.trim()}`);
 
-  const waHref=`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(lines.join('\n'))}`;
+  // ── ENVOI GOOGLE SHEETS ──────────────────────────────────
+  if(SHEET_URL){
+    const payload={
+      projet: type==='louer'?'Location':'Achat',
+      localisation: q(1),
+      typeBien: q(2),
+      ville: q(3),
+      chambres: [...document.querySelectorAll('#s4 .card.sel .card-txt')].map(e=>e.textContent.trim()).join(', '),
+      budgetThb: bVal,
+      budgetEur: fmtEur(bVal),
+      dateEmmenagement: type==='louer'?(document.getElementById('ddate').value||''):'',
+      duree: type==='louer'?q(7):'',
+      quartiers: bkk?quartiers:'',
+      criteres: document.getElementById('criteres').value.trim(),
+      nom: document.getElementById('nom').value.trim(),
+      tel: document.getElementById('tel').value.trim()
+    };
+    fetch(SHEET_URL,{method:'POST',body:JSON.stringify(payload)}).catch(()=>{});
+  }
 
+  const suc=document.getElementById('suc').cloneNode(true);
   document.getElementById('sw').innerHTML='';
   document.getElementById('nav').style.display='none';
   document.getElementById('pf').style.width='100%';
-
-  const suc=document.getElementById('suc').cloneNode(true);
   suc.classList.add('active'); suc.style.display='flex';
-  suc.querySelector('#wa-link').href=waHref;
   document.getElementById('sw').appendChild(suc);
 }
 
