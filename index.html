@@ -845,6 +845,29 @@ function submit(){
     fetch(SHEET_URL,{method:'POST',body:JSON.stringify(payload)}).catch(()=>{});
   }
 
+  // ── ENVOI WEB3FORMS ──────────────────────────────────────
+  const w3f=new FormData();
+  w3f.append('access_key','763a6a8a-b03a-403f-9127-5060006a3c29');
+  w3f.append('subject','Nouveau formulaire immobilier 🇹🇭');
+  w3f.append('from_name', document.getElementById('nom').value.trim());
+  w3f.append('message', lines.join('\n'));
+  w3f.append('Projet', type==='louer'?'Location':'Achat');
+  w3f.append('Localisation', q(1));
+  w3f.append('Type de bien', q(2));
+  w3f.append('Ville', q(3));
+  w3f.append('Chambres', [...document.querySelectorAll('#s4 .card.sel .card-txt')].map(e=>e.textContent.trim()).join(', '));
+  w3f.append('Budget', `฿${fmtThb(bVal)} (${fmtEur(bVal)})`);
+  if(type==='louer'){
+    w3f.append('Emménagement', document.getElementById('ddate').value||'Non précisé');
+    w3f.append('Durée', q(7));
+  }
+  if(bkk) w3f.append('Quartiers', quartiers);
+  const crit2=document.getElementById('criteres').value.trim();
+  if(crit2) w3f.append('Critères', crit2);
+  w3f.append('Nom', document.getElementById('nom').value.trim());
+  w3f.append('Téléphone', document.getElementById('tel').value.trim());
+  fetch('https://api.web3forms.com/submit',{method:'POST',body:w3f}).catch(()=>{});
+
   const suc=document.getElementById('suc').cloneNode(true);
   document.getElementById('sw').innerHTML='';
   document.getElementById('nav').style.display='none';
