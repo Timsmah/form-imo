@@ -340,7 +340,7 @@ textarea{min-height:110px;resize:vertical}
   <div class="qlabel">Question 6 / <span class="tot"></span></div>
   <div class="qtitle">À partir de quand ?</div>
   <div class="qdesc">Date souhaitée d'entrée dans le logement</div>
-  <input type="date" id="ddate" onchange="refreshNav()">
+  <input type="date" id="ddate" lang="en-GB" onchange="refreshNav()" style="text-align:center">
 </div>
 
 <!-- 7 -->
@@ -375,7 +375,8 @@ textarea{min-height:110px;resize:vertical}
   <div class="qlabel">Question <span id="q9n">9</span> / <span class="tot"></span><span class="opt-badge">Optionnel</span></div>
   <div class="qtitle">Autres critères ?</div>
   <div class="qdesc">Piscine, gym, parking, animaux, accès BTS direct…</div>
-  <textarea id="criteres" placeholder="Ex : j'ai un chien, budget flexible si le bien est exceptionnel, besoin d'un parking couvert…"></textarea>
+  <textarea id="criteres" maxlength="400" placeholder="Ex : j'ai un chien, budget flexible si le bien est exceptionnel, besoin d'un parking couvert…" oninput="updateCounter()"></textarea>
+  <div style="text-align:right;font-size:11px;color:var(--muted);margin-top:5px"><span id="criCount">0</span> / 400</div>
 </div>
 
 <!-- 10 -->
@@ -383,8 +384,8 @@ textarea{min-height:110px;resize:vertical}
   <div class="qlabel">Dernière étape</div>
   <div class="qtitle">Vos coordonnées</div>
   <div class="qdesc">Pour vous recontacter rapidement sur WhatsApp</div>
-  <div class="igroup"><label class="ilabel">Nom et prénom</label><input type="text" id="nom" placeholder="Thomas Dupont" oninput="refreshNav()"></div>
-  <div class="igroup"><label class="ilabel">Téléphone / WhatsApp</label><input type="tel" id="tel" placeholder="+33 6 12 34 56 78" oninput="refreshNav()"></div>
+  <div class="igroup"><label class="ilabel">Nom et prénom</label><input type="text" id="nom" maxlength="60" placeholder="Thomas Dupont" oninput="refreshNav()"></div>
+  <div class="igroup"><label class="ilabel">Téléphone / WhatsApp</label><input type="tel" id="tel" maxlength="20" placeholder="+33 6 12 34 56 78" oninput="filterTel(this)"></div>
 </div>
 
 <!-- SUCCESS -->
@@ -543,9 +544,22 @@ const BTS_STATIONS = [
 
 // ── BUDGET CONFIG ────────────────────────────────────────────
 const BUDGET_CONF={
-  louer:   {min:20000,  max:300000,   step:1000,   def:50000},
-  acheter: {min:500000, max:25000000, step:100000, def:5000000}
+  louer:   {min:20000,  mid:40000,   max:300000,   step:1000,   def:40000},
+  acheter: {min:500000, mid:5000000, max:25000000, step:100000, def:5000000}
 };
+
+// Échelle non-linéaire : milieu du curseur = valeur mid
+function sliderToThb(pct, conf){
+  let raw = pct<=0.5
+    ? conf.min + (pct/0.5)*(conf.mid-conf.min)
+    : conf.mid + ((pct-0.5)/0.5)*(conf.max-conf.mid);
+  return Math.round(raw/conf.step)*conf.step;
+}
+function thbToSlider(thb, conf){
+  return thb<=conf.mid
+    ? ((thb-conf.min)/(conf.mid-conf.min))*0.5
+    : 0.5+((thb-conf.mid)/(conf.max-conf.mid))*0.5;
+}
 
 function fmtThb(n){
   return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,' ');
@@ -688,9 +702,9 @@ function toggleDK(){
 function initBudget(){
   const conf=BUDGET_CONF[type]||BUDGET_CONF.louer;
   const sl=document.getElementById('bslider');
-  sl.min=conf.min; sl.max=conf.max; sl.step=conf.step;
+  sl.min=0; sl.max=1000; sl.step=1;
   if(bVal<conf.min||bVal>conf.max) bVal=conf.def;
-  sl.value=bVal;
+  sl.value=Math.round(thbToSlider(bVal,conf)*1000);
   if(type==='louer'){
     document.getElementById('bq').textContent='Budget mensuel ?';
     document.getElementById('bunit').textContent='/mois';
@@ -705,13 +719,17 @@ function initBudget(){
   renderBudget();
 }
 
-function onSlider(v){ bVal=parseInt(v); renderBudget(); }
+function onSlider(v){
+  const conf=BUDGET_CONF[type]||BUDGET_CONF.louer;
+  bVal=sliderToThb(parseInt(v)/1000, conf);
+  renderBudget();
+}
 
 function renderBudget(){
   const conf=BUDGET_CONF[type]||BUDGET_CONF.louer;
   document.getElementById('bamt').textContent='฿'+fmtThb(bVal);
   document.getElementById('beq').textContent=fmtEur(bVal);
-  const pct=((bVal-conf.min)/(conf.max-conf.min))*100;
+  const pct=thbToSlider(bVal,conf)*100;
   document.getElementById('bslider').style.background=
     `linear-gradient(to right,var(--dark) 0%,var(--dark) ${pct}%,var(--border) ${pct}%,var(--border) 100%)`;
 }
@@ -735,6 +753,22 @@ function pick1(el,group,isBkk){
   }
   refreshNav();
   setTimeout(next,280);
+}
+
+function filterTel(el){
+  // Garde uniquement chiffres, +, espaces, tirets
+  const pos=el.selectionStart;
+  const prev=el.value;
+  el.value=el.value.replace(/[^\d+\s\-]/g,'');
+  // Rétablit le + uniquement en première position
+  el.value=el.value.replace(/(?!^)\+/g,'');
+  if(el.value!==prev) el.setSelectionRange(pos-1,pos-1);
+  refreshNav();
+}
+
+function updateCounter(){
+  const el=document.getElementById('criteres');
+  document.getElementById('criCount').textContent=el.value.length;
 }
 
 function pickMulti(el){
