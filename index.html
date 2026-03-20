@@ -28,33 +28,37 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 /* ── HEADER ─────────────────────────────────────────────── */
 .hdr{
   background:var(--dark);
-  padding:44px 28px 38px;
+  padding:24px 24px 18px;
   color:#fff;
   position:relative;overflow:hidden;flex-shrink:0;
 }
 .hdr::before{
-  content:'';position:absolute;top:-80px;right:-80px;
-  width:280px;height:280px;
-  border-radius:50%;
-  border:60px solid rgba(196,155,69,.08);
+  content:'';position:absolute;top:-60px;right:-60px;
+  width:220px;height:220px;border-radius:50%;
+  border:50px solid rgba(196,155,69,.07);
 }
-.hdr::after{
-  content:'';position:absolute;bottom:-40px;left:-40px;
-  width:180px;height:180px;
-  border-radius:50%;
-  border:40px solid rgba(196,155,69,.05);
+.hdr-inner{
+  display:flex;align-items:flex-start;gap:18px;position:relative;z-index:1;
 }
-.hdr-badge{
-  display:inline-flex;align-items:center;gap:6px;
-  background:var(--gold-bg);color:var(--gold);
-  padding:5px 12px;border-radius:20px;
-  font-size:11px;font-weight:700;letter-spacing:.04em;
-  text-transform:uppercase;margin-bottom:18px;
-  border:1px solid rgba(196,155,69,.25);
+.hdr-avatar{
+  flex-shrink:0;
+  width:72px;height:72px;border-radius:50%;
+  border:2px solid var(--gold);
+  object-fit:cover;object-position:center top;
+  box-shadow:0 0 0 4px rgba(196,155,69,.15);
 }
-.hdr h1{font-size:26px;font-weight:900;line-height:1.2;margin-bottom:10px}
-.hdr p{font-size:13px;line-height:1.65;color:rgba(255,255,255,.62)}
-.hdr-dot{display:inline-block;width:5px;height:5px;background:var(--gold);border-radius:50%;margin:0 6px;vertical-align:middle}
+.hdr-text{ flex:1;min-width:0; }
+.hdr h1{
+  font-size:17px;font-weight:800;line-height:1.35;
+  margin:0 0 10px;color:#fff;
+}
+.hdr h1 .emoji{ font-size:18px; }
+.hdr p{
+  font-size:12.5px;line-height:1.65;
+  color:rgba(255,255,255,.6);margin:0;
+}
+.hdr p + p{ margin-top:8px; }
+.hdr-dot{display:inline-block;width:4px;height:4px;background:var(--gold);border-radius:50%;margin:0 7px;vertical-align:middle;}
 
 /* ── PROGRESS ────────────────────────────────────────────── */
 .prog-wrap{background:var(--dark);padding:0 24px 20px;flex-shrink:0}
@@ -154,7 +158,7 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.1)}
 .slider-ends{display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:var(--muted)}
 
 /* ── MAP ─────────────────────────────────────────────────── */
-#bkk-map{
+#city-map{
   height:360px;border-radius:14px;overflow:hidden;
   margin-bottom:16px;
   box-shadow:0 0 0 1.5px var(--border),0 4px 20px rgba(21,19,31,.08);
@@ -171,6 +175,9 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.1)}
 }
 .leaflet-tooltip.hlabel::before{display:none!important}
 .leaflet-control-attribution{font-size:9px!important;opacity:.6}
+.map-legend{display:flex;gap:14px;justify-content:center;margin:8px 0 12px;font-size:11px;font-weight:600;color:var(--muted)}
+.legend-item{display:flex;align-items:center;gap:5px}
+.legend-line{display:inline-block;width:22px;height:3.5px;border-radius:2px}
 
 /* ── TAGS ────────────────────────────────────────────────── */
 .tags{display:flex;flex-wrap:wrap;gap:8px;min-height:28px;margin-top:12px;align-items:center}
@@ -244,9 +251,14 @@ textarea{min-height:110px;resize:vertical}
 
 <!-- HEADER -->
 <div class="hdr">
-  <div class="hdr-badge">🇹🇭 Agent immobilier · Bangkok</div>
-  <h1>Trouvons ton<br>bien idéal</h1>
-  <p style="margin-top:12px">Agent et investisseur immobilier à Bangkok.<span class="hdr-dot"></span>2 min pour que je te réponde précisément.</p>
+  <div class="hdr-inner">
+    <img class="hdr-avatar" src="download.png" alt="Tim">
+    <div class="hdr-text">
+      <h1>Merci d'avoir cliqué sur le lien, tu cherches un condo ou autre chose&nbsp;?</h1>
+      <p>Installé en Thaïlande depuis 2 ans, j'accompagne pas mal de monde sur leurs projets (en tant qu'agent et investisseur perso).</p>
+      <p>Pour qu'on gagne du temps tous les deux et que je puisse te répondre précisément avec mon expérience du terrain, merci de remplir ce petit formulaire rapide <strong style="color:var(--gold)">(2 min max)</strong></p>
+    </div>
+  </div>
 </div>
 <div class="prog-wrap" id="progWrap">
   <div class="prog-top">
@@ -300,10 +312,11 @@ textarea{min-height:110px;resize:vertical}
   <div class="qlabel">Question 3 / <span class="tot"></span></div>
   <div class="qtitle">Dans quelle ville ?</div>
   <div class="grid" style="margin-top:4px">
-    <div class="card" onclick="pick1(this,'ville',true)"><div class="chk"></div><span class="card-icon">🏙️</span><div><div class="card-txt">Bangkok</div></div></div>
-    <div class="card" onclick="pick1(this,'ville',false)"><div class="chk"></div><span class="card-icon">🏖️</span><div><div class="card-txt">Pattaya</div></div></div>
-    <div class="card" onclick="pick1(this,'ville',false)"><div class="chk"></div><span class="card-icon">🌊</span><div><div class="card-txt">Phuket</div></div></div>
-    <div class="card" onclick="pick1(this,'ville',false)"><div class="chk"></div><span class="card-icon">🗺️</span><div><div class="card-txt">Autre / Pas encore décidé</div></div></div>
+    <div class="card" onclick="pick1(this,'ville','bangkok')"><div class="chk"></div><span class="card-icon">🏙️</span><div><div class="card-txt">Bangkok</div></div></div>
+    <div class="card" onclick="pick1(this,'ville','pattaya')"><div class="chk"></div><span class="card-icon">🏖️</span><div><div class="card-txt">Pattaya</div></div></div>
+    <div class="card" onclick="pick1(this,'ville','phuket')"><div class="chk"></div><span class="card-icon">🌊</span><div><div class="card-txt">Phuket</div></div></div>
+    <div class="card" onclick="pick1(this,'ville','thailand')"><div class="chk"></div><span class="card-icon">🗺️</span><div><div class="card-txt">Autre</div></div></div>
+    <div class="card" onclick="pick1(this,'ville',null)"><div class="chk"></div><span class="card-icon">🤷</span><div><div class="card-txt">Pas encore décidé</div></div></div>
   </div>
 </div>
 
@@ -340,7 +353,7 @@ textarea{min-height:110px;resize:vertical}
   <div class="qlabel">Question 6 / <span class="tot"></span></div>
   <div class="qtitle">À partir de quand ?</div>
   <div class="qdesc">Date souhaitée d'entrée dans le logement</div>
-  <input type="date" id="ddate" lang="en-GB" onchange="refreshNav()" style="text-align:center">
+  <input type="date" id="ddate" lang="en-GB" min="2025-01-01" max="2030-12-31" onchange="refreshNav()" style="text-align:center">
 </div>
 
 <!-- 7 -->
@@ -360,7 +373,12 @@ textarea{min-height:110px;resize:vertical}
   <div class="qlabel">Question <span id="q8n">8</span> / <span class="tot"></span><span class="opt-badge">Optionnel</span></div>
   <div class="qtitle">Quartiers qui vous intéressent ?</div>
   <div class="qdesc">Touchez les zones sur la carte pour les sélectionner</div>
-  <div id="bkk-map"></div>
+  <div id="city-map"></div>
+  <div class="map-legend" id="map-legend">
+    <div class="legend-item"><span class="legend-line" style="background:#22C55E"></span> BTS Sukhumvit</div>
+    <div class="legend-item"><span class="legend-line" style="background:#15803D"></span> BTS Silom</div>
+    <div class="legend-item"><span class="legend-line" style="background:#3B82F6;background-image:repeating-linear-gradient(90deg,#3B82F6 0,#3B82F6 6px,transparent 6px,transparent 10px)"></span> MRT Blue</div>
+  </div>
   <div class="tags" id="tags"><span class="no-sel" id="nosel">Aucun quartier sélectionné</span></div>
   <div style="margin-top:14px">
     <div class="card" id="c-dk" onclick="toggleDK()">
@@ -384,8 +402,8 @@ textarea{min-height:110px;resize:vertical}
   <div class="qlabel">Dernière étape</div>
   <div class="qtitle">Vos coordonnées</div>
   <div class="qdesc">Pour vous recontacter rapidement sur WhatsApp</div>
-  <div class="igroup"><label class="ilabel">Nom et prénom</label><input type="text" id="nom" maxlength="60" placeholder="Thomas Dupont" oninput="refreshNav()"></div>
-  <div class="igroup"><label class="ilabel">Téléphone / WhatsApp</label><input type="tel" id="tel" maxlength="20" placeholder="+33 6 12 34 56 78" oninput="filterTel(this)"></div>
+  <div class="igroup"><label class="ilabel">Nom et prénom <span style="color:var(--gold);font-weight:700">*</span></label><input type="text" id="nom" maxlength="60" required placeholder="Thomas Dupont" oninput="refreshNav()"></div>
+  <div class="igroup"><label class="ilabel">Téléphone / WhatsApp <span style="color:var(--gold);font-weight:700">*</span></label><input type="tel" id="tel" maxlength="20" required placeholder="+33 6 12 34 56 78" oninput="filterTel(this)"></div>
 </div>
 
 <!-- SUCCESS -->
@@ -411,109 +429,349 @@ textarea{min-height:110px;resize:vertical}
 const WA_NUMBER = "66XXXXXXXXX"; // ← Ton numéro sans + (ex: 66812345678)
 const SHEET_URL = "https://script.google.com/macros/s/AKfycbznXijom1SjT0LBriHZSgYNqUIOO27zcww6qLcbRSNVP2XVvwAsFvNV97mWx-h4Rti4gw/exec";
 
-// Zones cartographiques Bangkok — sans chevauchement
-// Frontières partagées exactes entre zones adjacentes
+// ═══════════════════════════════════════════════════════════
+// ZONES CARTOGRAPHIQUES BANGKOK — couverture complète
 // Coordonnées : [longitude, latitude] format GeoJSON
+// ═══════════════════════════════════════════════════════════
 const HOODS_GEO = {
   type:'FeatureCollection',
   features:[
-    // ── SILOM / SATHORN ── (sud, axe diagonal Silom Road)
+    // 1. RIVERSIDE
     { type:'Feature',
-      properties:{id:'silom',name:'Silom / Sathorn',sub:'CBD · Sala Daeng',color:'#FCA5A5',border:'#DC2626'},
+      properties:{id:'riverside',name:'Riverside',sub:'Chao Phraya · ICONSIAM',color:'#FDBA74',border:'#EA580C'},
       geometry:{type:'Polygon',coordinates:[[
-        [100.493,13.706],[100.508,13.699],[100.521,13.695],[100.535,13.694],
-        [100.547,13.698],[100.556,13.707],[100.558,13.718],[100.557,13.726],
-        [100.538,13.725],[100.518,13.726],[100.502,13.721],[100.493,13.714],
-        [100.493,13.706]
+        [100.483,13.693],[100.492,13.690],[100.502,13.692],[100.507,13.697],
+        [100.508,13.710],[100.510,13.722],[100.511,13.736],[100.510,13.747],
+        [100.498,13.752],[100.490,13.756],[100.484,13.755],
+        [100.481,13.742],[100.480,13.728],[100.481,13.712],
+        [100.483,13.693]
       ]]}
     },
-    // ── CHIT LOM / SIAM ── (centre, Ratchaprasong/Pathum Wan)
+    // 2. OLD TOWN
     { type:'Feature',
-      properties:{id:'chitlom',name:'Chit Lom / Siam',sub:'Siam · Ratchaprasong',color:'#C4B5FD',border:'#7C3AED'},
+      properties:{id:'oldtown',name:'Old Town',sub:'Rattanakosin · Chinatown',color:'#C4B5FD',border:'#7C3AED'},
       geometry:{type:'Polygon',coordinates:[[
-        [100.506,13.730],[100.521,13.732],[100.537,13.731],[100.554,13.730],
-        [100.554,13.758],
-        [100.538,13.761],[100.522,13.762],[100.510,13.758],
-        [100.503,13.747],[100.504,13.737],[100.506,13.730]
+        [100.484,13.755],[100.490,13.756],[100.498,13.752],
+        [100.510,13.747],[100.518,13.748],[100.524,13.744],
+        [100.526,13.756],[100.524,13.772],[100.525,13.788],
+        [100.526,13.804],[100.524,13.818],
+        [100.514,13.822],[100.504,13.820],[100.495,13.815],
+        [100.487,13.807],[100.483,13.794],[100.482,13.778],
+        [100.483,13.766],[100.484,13.755]
       ]]}
     },
-    // ── ARI ── (nord, Phaya Thai / Phahonyothin)
+    // 3. SILOM / SATHON
     { type:'Feature',
-      properties:{id:'ari',name:'Ari',sub:'Saphan Khwai',color:'#93C5FD',border:'#2563EB'},
+      properties:{id:'silom',name:'Silom / Sathon',sub:'CBD · Sala Daeng',color:'#86EFAC',border:'#16A34A'},
       geometry:{type:'Polygon',coordinates:[[
-        [100.510,13.758],[100.522,13.762],[100.538,13.761],[100.554,13.758],
-        [100.554,13.810],
-        [100.540,13.817],[100.524,13.818],[100.508,13.814],[100.498,13.803],
-        [100.493,13.788],[100.495,13.771],[100.502,13.762],[100.510,13.758]
+        [100.507,13.697],[100.516,13.693],[100.530,13.691],[100.542,13.693],
+        [100.552,13.697],[100.555,13.704],[100.554,13.716],[100.552,13.726],
+        [100.543,13.730],[100.534,13.733],[100.524,13.744],
+        [100.518,13.748],[100.510,13.747],[100.511,13.736],
+        [100.510,13.722],[100.508,13.710],[100.507,13.697]
       ]]}
     },
-    // ── LAT PHRAO ── (nord-est, le long de Lat Phrao Road)
+    // 4. SIAM
     { type:'Feature',
-      properties:{id:'latphrao',name:'Lat Phrao',sub:'MRT Lat Phrao',color:'#FBB6CE',border:'#DB2777'},
+      properties:{id:'siam',name:'Siam',sub:'',color:'#93C5FD',border:'#2563EB'},
       geometry:{type:'Polygon',coordinates:[[
-        [100.554,13.758],[100.554,13.810],
-        [100.558,13.822],[100.564,13.840],[100.572,13.850],
-        [100.586,13.856],[100.602,13.858],[100.618,13.856],
-        [100.632,13.848],[100.642,13.832],[100.644,13.814],
-        [100.638,13.796],[100.624,13.772],[100.608,13.762],
-        [100.588,13.758],[100.570,13.757],[100.554,13.758]
+        [100.524,13.744],[100.534,13.733],[100.543,13.730],[100.552,13.726],
+        [100.555,13.734],[100.556,13.744],[100.555,13.754],
+        [100.548,13.758],[100.540,13.760],[100.532,13.758],
+        [100.526,13.756],[100.524,13.744]
       ]]}
     },
-    // ── ASOKE ── (Sukhumvit 21, jonction Asoke)
+    // 5. RATCHATHEWI
     { type:'Feature',
-      properties:{id:'asoke',name:'Asoke',sub:'Nana · Sukhumvit 21',color:'#F9A8D4',border:'#BE185D'},
+      properties:{id:'ratchathewi',name:'Ratchathewi',sub:'Victory Monument',color:'#FDE68A',border:'#D97706'},
       geometry:{type:'Polygon',coordinates:[[
-        [100.554,13.730],[100.568,13.728],[100.578,13.727],
-        [100.578,13.754],[100.566,13.758],[100.554,13.758],
-        [100.554,13.730]
+        [100.526,13.756],[100.532,13.758],[100.540,13.760],[100.548,13.758],
+        [100.555,13.754],[100.556,13.766],[100.555,13.778],[100.554,13.790],
+        [100.544,13.793],[100.535,13.792],[100.525,13.788],
+        [100.524,13.772],[100.526,13.756]
       ]]}
     },
-    // ── PHROM PONG ── (Emporium, Sukhumvit 39)
+    // 6. ARI
     { type:'Feature',
-      properties:{id:'phrom',name:'Phrom Pong',sub:'Sukhumvit 39',color:'#FDE68A',border:'#D97706'},
+      properties:{id:'ari',name:'Ari',sub:'Phahonyothin · Saphan Khwai',color:'#67E8F9',border:'#0891B2'},
       geometry:{type:'Polygon',coordinates:[[
-        [100.578,13.721],[100.588,13.719],[100.596,13.718],
-        [100.596,13.748],[100.584,13.752],[100.578,13.754],
-        [100.578,13.721]
+        [100.525,13.788],[100.535,13.792],[100.544,13.793],[100.554,13.790],
+        [100.556,13.802],[100.555,13.815],[100.552,13.822],
+        [100.542,13.826],[100.532,13.824],[100.524,13.818],
+        [100.526,13.804],[100.525,13.788]
       ]]}
     },
-    // ── THONGLOR ── (Sukhumvit 55 / Ekkamai)
+    // 7. ASOKE
     { type:'Feature',
-      properties:{id:'thong',name:'Thonglor',sub:'Ekkamai',color:'#6EE7B7',border:'#059669'},
+      properties:{id:'asoke',name:'Asoke',sub:'',color:'#FCA5A5',border:'#DC2626'},
       geometry:{type:'Polygon',coordinates:[[
-        [100.596,13.714],[100.606,13.712],[100.616,13.712],
-        [100.616,13.742],[100.604,13.746],[100.596,13.748],
-        [100.596,13.714]
+        [100.552,13.726],[100.558,13.724],[100.565,13.722],[100.573,13.721],
+        [100.575,13.730],[100.576,13.742],[100.575,13.754],
+        [100.567,13.756],[100.560,13.755],[100.555,13.754],
+        [100.556,13.744],[100.555,13.734],[100.552,13.726]
       ]]}
     },
-    // ── ON NUT ── (Sukhumvit 77, Bearing)
+    // 8. PHROM PHONG
     { type:'Feature',
-      properties:{id:'onnut',name:'On Nut',sub:'Bearing',color:'#A5F3FC',border:'#0891B2'},
+      properties:{id:'phrom',name:'Phrom Phong',sub:'',color:'#F9A8D4',border:'#DB2777'},
       geometry:{type:'Polygon',coordinates:[[
-        [100.616,13.695],[100.628,13.690],[100.642,13.692],[100.650,13.700],
-        [100.648,13.720],[100.640,13.730],[100.628,13.738],[100.616,13.742],
-        [100.616,13.695]
+        [100.573,13.721],[100.579,13.719],[100.585,13.718],[100.591,13.717],
+        [100.592,13.728],[100.593,13.740],[100.592,13.754],
+        [100.586,13.755],[100.579,13.755],[100.575,13.754],
+        [100.576,13.742],[100.575,13.730],[100.573,13.721]
+      ]]}
+    },
+    // 9. THONGLOR
+    { type:'Feature',
+      properties:{id:'thonglor',name:'Thonglor',sub:'',color:'#6EE7B7',border:'#059669'},
+      geometry:{type:'Polygon',coordinates:[[
+        [100.591,13.717],[100.597,13.715],[100.603,13.713],[100.609,13.712],
+        [100.610,13.724],[100.611,13.738],[100.610,13.754],
+        [100.604,13.755],[100.598,13.755],[100.592,13.754],
+        [100.593,13.740],[100.592,13.728],[100.591,13.717]
+      ]]}
+    },
+    // 10. EKKAMAI
+    { type:'Feature',
+      properties:{id:'ekkamai',name:'Ekkamai',sub:'',color:'#A5B4FC',border:'#4F46E5'},
+      geometry:{type:'Polygon',coordinates:[[
+        [100.609,13.712],[100.616,13.710],[100.623,13.707],[100.631,13.705],
+        [100.633,13.718],[100.634,13.735],[100.633,13.754],
+        [100.624,13.755],[100.617,13.755],[100.610,13.754],
+        [100.611,13.738],[100.610,13.724],[100.609,13.712]
+      ]]}
+    },
+    // 11. ON NUT
+    { type:'Feature',
+      properties:{id:'onnut',name:'On Nut',sub:'Phra Khanong · Bearing',color:'#A5F3FC',border:'#0E7490'},
+      geometry:{type:'Polygon',coordinates:[[
+        [100.555,13.704],[100.565,13.697],[100.580,13.692],[100.598,13.690],
+        [100.615,13.693],[100.626,13.697],[100.631,13.705],
+        [100.623,13.707],[100.616,13.710],[100.609,13.712],
+        [100.603,13.713],[100.597,13.715],[100.591,13.717],
+        [100.585,13.718],[100.579,13.719],[100.573,13.721],
+        [100.565,13.722],[100.558,13.724],[100.552,13.726],
+        [100.554,13.716],[100.555,13.704]
+      ]]}
+    },
+    // 12. LAT PHRAO
+    { type:'Feature',
+      properties:{id:'latphrao',name:'Lat Phrao',sub:'Huai Khwang · RCA · Rama 9',color:'#FBB6CE',border:'#DB2777'},
+      geometry:{type:'Polygon',coordinates:[[
+        [100.555,13.754],[100.560,13.755],[100.567,13.756],[100.575,13.754],
+        [100.579,13.755],[100.586,13.755],[100.592,13.754],
+        [100.598,13.755],[100.604,13.755],[100.610,13.754],
+        [100.617,13.755],[100.624,13.755],[100.633,13.754],
+        [100.634,13.770],[100.633,13.790],[100.630,13.808],
+        [100.624,13.818],[100.614,13.824],[100.600,13.826],
+        [100.585,13.825],[100.570,13.823],[100.556,13.820],
+        [100.555,13.815],[100.556,13.802],[100.554,13.790],
+        [100.555,13.778],[100.556,13.766],[100.555,13.754]
       ]]}
     }
   ]
-}
+};
 
-// Dérivé pour la compatibilité avec le reste du code (tags, couleurs…)
-const HOODS = HOODS_GEO.features.map(f=>f.properties);
+// ── PATTAYA ZONES ────────────────────────────────────────────
+const HOODS_PATTAYA = {
+  type:'FeatureCollection',
+  features:[
+    {type:'Feature',properties:{id:'wongamat',name:'Wongamat',sub:'Naklua · Wong Amat Beach',color:'#93C5FD',border:'#2563EB'},
+     geometry:{type:'Polygon',coordinates:[[
+       [100.873,12.978],[100.884,12.980],[100.896,12.978],[100.904,12.973],
+       [100.906,12.964],[100.904,12.957],[100.896,12.954],
+       [100.886,12.953],[100.877,12.955],[100.872,12.960],
+       [100.870,12.968],[100.871,12.974],[100.873,12.978]
+     ]]}},
+    {type:'Feature',properties:{id:'northpat',name:'North Pattaya',sub:'Soi 1-6 · Dolphin',color:'#FDE68A',border:'#D97706'},
+     geometry:{type:'Polygon',coordinates:[[
+       [100.872,12.960],[100.877,12.955],[100.886,12.953],[100.896,12.954],
+       [100.904,12.957],[100.910,12.956],[100.918,12.955],[100.925,12.952],
+       [100.924,12.945],[100.920,12.940],[100.910,12.938],
+       [100.898,12.939],[100.886,12.940],[100.876,12.942],
+       [100.870,12.948],[100.870,12.954],[100.872,12.960]
+     ]]}},
+    {type:'Feature',properties:{id:'central',name:'Central Pattaya',sub:'Beach Road · Second Road',color:'#86EFAC',border:'#16A34A'},
+     geometry:{type:'Polygon',coordinates:[[
+       [100.870,12.948],[100.876,12.942],[100.886,12.940],[100.898,12.939],
+       [100.910,12.938],[100.920,12.940],[100.924,12.945],
+       [100.922,12.932],[100.918,12.926],[100.908,12.924],
+       [100.895,12.924],[100.882,12.925],[100.874,12.928],
+       [100.868,12.935],[100.868,12.942],[100.870,12.948]
+     ]]}},
+    {type:'Feature',properties:{id:'southpat',name:'South Pattaya',sub:'Walking Street',color:'#FCA5A5',border:'#DC2626'},
+     geometry:{type:'Polygon',coordinates:[[
+       [100.868,12.935],[100.874,12.928],[100.882,12.925],[100.895,12.924],
+       [100.908,12.924],[100.918,12.926],[100.922,12.932],
+       [100.920,12.918],[100.916,12.912],[100.906,12.910],
+       [100.893,12.910],[100.880,12.912],[100.870,12.916],
+       [100.865,12.922],[100.866,12.930],[100.868,12.935]
+     ]]}},
+    {type:'Feature',properties:{id:'pratumnak',name:'Pratumnak',sub:'Pratumnak Hill',color:'#C4B5FD',border:'#7C3AED'},
+     geometry:{type:'Polygon',coordinates:[[
+       [100.865,12.922],[100.870,12.916],[100.880,12.912],[100.893,12.910],
+       [100.906,12.910],[100.916,12.912],[100.920,12.918],
+       [100.918,12.906],[100.914,12.900],[100.905,12.897],
+       [100.892,12.896],[100.880,12.898],[100.870,12.902],
+       [100.864,12.908],[100.862,12.916],[100.865,12.922]
+     ]]}},
+    {type:'Feature',properties:{id:'jomtien',name:'Jomtien',sub:'Jomtien Beach · Dongtan',color:'#67E8F9',border:'#0891B2'},
+     geometry:{type:'Polygon',coordinates:[[
+       [100.862,12.916],[100.864,12.908],[100.870,12.902],[100.880,12.898],
+       [100.892,12.896],[100.905,12.897],[100.914,12.900],
+       [100.912,12.886],[100.908,12.874],[100.900,12.870],
+       [100.888,12.868],[100.876,12.870],[100.866,12.876],
+       [100.860,12.886],[100.858,12.898],[100.860,12.910],[100.862,12.916]
+     ]]}},
+    {type:'Feature',properties:{id:'najomtien',name:'Na Jomtien',sub:'Ambassador · Silverlake',color:'#FDBA74',border:'#EA580C'},
+     geometry:{type:'Polygon',coordinates:[[
+       [100.858,12.898],[100.860,12.886],[100.866,12.876],[100.876,12.870],
+       [100.888,12.868],[100.900,12.870],[100.908,12.874],
+       [100.906,12.858],[100.902,12.845],[100.895,12.838],
+       [100.882,12.836],[100.870,12.838],[100.860,12.844],
+       [100.855,12.855],[100.854,12.868],[100.856,12.884],[100.858,12.898]
+     ]]}},
+    {type:'Feature',properties:{id:'eastpat',name:'East Pattaya',sub:'Darkside · Mabprachan',color:'#F9A8D4',border:'#DB2777'},
+     geometry:{type:'Polygon',coordinates:[[
+       [100.925,12.952],[100.932,12.958],[100.940,12.962],[100.948,12.960],
+       [100.950,12.948],[100.950,12.930],[100.948,12.910],
+       [100.946,12.895],[100.942,12.878],[100.938,12.868],
+       [100.930,12.865],[100.920,12.868],[100.912,12.874],
+       [100.908,12.874],[100.914,12.900],[100.920,12.918],
+       [100.922,12.932],[100.924,12.945],[100.925,12.952]
+     ]]}}
+  ]
+};
 
-// ── BTS Lines (coordonnées réelles des stations) ────────────
+// ── PHUKET ZONES ─────────────────────────────────────────────
+const HOODS_PHUKET = {
+  type:'FeatureCollection',
+  features:[
+    {type:'Feature',properties:{id:'patong',name:'Patong',sub:'Bangla Road · Jungceylon',color:'#FCA5A5',border:'#DC2626'},
+     geometry:{type:'Polygon',coordinates:[[
+       [98.278,7.925],[98.290,7.930],[98.308,7.928],[98.318,7.920],
+       [98.322,7.908],[98.320,7.895],[98.315,7.882],
+       [98.308,7.876],[98.295,7.874],[98.282,7.878],
+       [98.274,7.886],[98.270,7.898],[98.272,7.912],[98.278,7.925]
+     ]]}},
+    {type:'Feature',properties:{id:'kamala',name:'Kamala',sub:'Kamala Beach',color:'#86EFAC',border:'#16A34A'},
+     geometry:{type:'Polygon',coordinates:[[
+       [98.274,7.962],[98.288,7.965],[98.305,7.963],[98.318,7.958],
+       [98.318,7.920],[98.308,7.928],[98.290,7.930],[98.278,7.925],
+       [98.270,7.935],[98.268,7.948],[98.270,7.957],[98.274,7.962]
+     ]]}},
+    {type:'Feature',properties:{id:'surin',name:'Surin / Bang Tao',sub:'Laguna · Boat Avenue',color:'#93C5FD',border:'#2563EB'},
+     geometry:{type:'Polygon',coordinates:[[
+       [98.270,7.957],[98.274,7.962],[98.288,7.965],[98.305,7.963],[98.318,7.958],
+       [98.330,7.960],[98.342,7.965],[98.348,7.975],
+       [98.348,7.995],[98.345,8.010],[98.338,8.020],
+       [98.325,8.022],[98.310,8.018],[98.295,8.012],
+       [98.280,8.005],[98.272,7.995],[98.268,7.982],[98.268,7.968],[98.270,7.957]
+     ]]}},
+    {type:'Feature',properties:{id:'karon',name:'Kata / Karon',sub:'Karon Beach · Kata Beach',color:'#FDE68A',border:'#D97706'},
+     geometry:{type:'Polygon',coordinates:[[
+       [98.270,7.898],[98.274,7.886],[98.282,7.878],[98.295,7.874],
+       [98.308,7.876],[98.315,7.882],[98.322,7.878],
+       [98.330,7.870],[98.338,7.858],[98.340,7.845],
+       [98.335,7.835],[98.325,7.828],[98.312,7.825],
+       [98.298,7.826],[98.286,7.830],[98.278,7.838],
+       [98.272,7.850],[98.268,7.865],[98.268,7.880],[98.270,7.898]
+     ]]}},
+    {type:'Feature',properties:{id:'rawai',name:'Rawai / Nai Harn',sub:'Promthep Cape',color:'#C4B5FD',border:'#7C3AED'},
+     geometry:{type:'Polygon',coordinates:[[
+       [98.278,7.838],[98.286,7.830],[98.298,7.826],[98.312,7.825],
+       [98.325,7.828],[98.335,7.835],[98.340,7.845],
+       [98.342,7.830],[98.340,7.812],[98.335,7.798],
+       [98.325,7.788],[98.312,7.782],[98.298,7.780],
+       [98.285,7.785],[98.276,7.795],[98.272,7.808],[98.274,7.822],[98.278,7.838]
+     ]]}},
+    {type:'Feature',properties:{id:'chalong',name:'Chalong',sub:'Chalong Bay · Wat Chalong',color:'#67E8F9',border:'#0891B2'},
+     geometry:{type:'Polygon',coordinates:[[
+       [98.340,7.845],[98.338,7.858],[98.330,7.870],[98.322,7.878],
+       [98.315,7.882],[98.320,7.895],[98.322,7.908],[98.318,7.920],
+       [98.330,7.918],[98.345,7.915],[98.358,7.910],
+       [98.368,7.900],[98.372,7.888],[98.370,7.872],
+       [98.365,7.858],[98.358,7.848],[98.348,7.842],[98.340,7.845]
+     ]]}},
+    {type:'Feature',properties:{id:'phukettown',name:'Phuket Town',sub:'Old Town · Central Festival',color:'#FDBA74',border:'#EA580C'},
+     geometry:{type:'Polygon',coordinates:[[
+       [98.318,7.920],[98.318,7.958],[98.330,7.960],[98.342,7.965],
+       [98.348,7.975],[98.358,7.972],[98.372,7.968],
+       [98.385,7.960],[98.395,7.948],[98.398,7.935],
+       [98.395,7.920],[98.388,7.910],[98.378,7.905],
+       [98.368,7.900],[98.358,7.910],[98.345,7.915],[98.330,7.918],[98.318,7.920]
+     ]]}},
+    {type:'Feature',properties:{id:'thalang',name:'Thalang',sub:'Airport · Blue Tree',color:'#F9A8D4',border:'#DB2777'},
+     geometry:{type:'Polygon',coordinates:[[
+       [98.268,7.982],[98.272,7.995],[98.280,8.005],[98.295,8.012],
+       [98.310,8.018],[98.325,8.022],[98.338,8.020],
+       [98.345,8.010],[98.348,7.995],[98.348,7.975],
+       [98.358,7.972],[98.372,7.968],[98.385,7.960],
+       [98.395,7.948],[98.398,7.935],
+       [98.400,7.955],[98.398,7.978],[98.395,8.000],
+       [98.388,8.025],[98.380,8.045],[98.368,8.060],
+       [98.350,8.068],[98.330,8.070],[98.310,8.065],
+       [98.292,8.058],[98.278,8.048],[98.270,8.035],[98.266,8.018],
+       [98.266,8.000],[98.268,7.982]
+     ]]}}
+  ]
+};
+
+// ── THAILAND ZONES (points d'intérêt) ────────────────────────
+const HOODS_THAILAND = {
+  type:'FeatureCollection',
+  features:[
+    {type:'Feature',properties:{id:'chiangmai',name:'Chiang Mai',sub:'Nord · Montagne',color:'#86EFAC',border:'#16A34A'},
+     geometry:{type:'Polygon',coordinates:[[
+       [99.335,18.787],[99.232,18.993],[98.985,19.137],[98.738,18.993],
+       [98.635,18.787],[98.738,18.581],[98.985,18.437],[99.232,18.581],[99.335,18.787]
+     ]]}},
+    {type:'Feature',properties:{id:'huahin',name:'Hua Hin',sub:'Golfe · Station balnéaire',color:'#FDE68A',border:'#D97706'},
+     geometry:{type:'Polygon',coordinates:[[
+       [100.258,12.570],[100.170,12.782],[99.958,12.870],[99.746,12.782],
+       [99.658,12.570],[99.746,12.358],[99.958,12.270],[100.170,12.358],[100.258,12.570]
+     ]]}},
+    {type:'Feature',properties:{id:'kohsamui',name:'Koh Samui',sub:'Île · Golfe de Thaïlande',color:'#93C5FD',border:'#2563EB'},
+     geometry:{type:'Polygon',coordinates:[[
+       [100.263,9.512],[100.190,9.689],[100.013,9.762],[99.836,9.689],
+       [99.763,9.512],[99.836,9.335],[100.013,9.262],[100.190,9.335],[100.263,9.512]
+     ]]}},
+    {type:'Feature',properties:{id:'krabi',name:'Krabi',sub:'Ao Nang · Railay · Îles Phi Phi',color:'#C4B5FD',border:'#7C3AED'},
+     geometry:{type:'Polygon',coordinates:[[
+       [99.156,8.086],[99.083,8.263],[98.906,8.336],[98.729,8.263],
+       [98.656,8.086],[98.729,7.909],[98.906,7.836],[99.083,7.909],[99.156,8.086]
+     ]]}},
+    {type:'Feature',properties:{id:'kohchang',name:'Koh Chang',sub:'Île · Est · Trat',color:'#FDBA74',border:'#EA580C'},
+     geometry:{type:'Polygon',coordinates:[[
+       [102.565,12.060],[102.501,12.216],[102.345,12.280],[102.189,12.216],
+       [102.125,12.060],[102.189,11.904],[102.345,11.840],[102.501,11.904],[102.565,12.060]
+     ]]}}
+  ]
+};
+
+// ── CONFIG PAR VILLE ─────────────────────────────────────────
+const CITY_DATA = {
+  bangkok:  { geo: HOODS_GEO, transit: true },
+  pattaya:  { geo: HOODS_PATTAYA, transit: false },
+  phuket:   { geo: HOODS_PHUKET, transit: false },
+  thailand: { geo: HOODS_THAILAND, transit: false }
+};
+
+function getCurrentHoods(){ return (CITY_DATA[mapCity]?.geo?.features||[]).map(f=>f.properties); }
+
+// ── BTS Sukhumvit (vert clair) ──────────────────────────────
 const BTS_SUKHUMVIT = [
   [13.8023,100.5526], // Mo Chit
-  [13.7921,100.5448], // Saphan Khwai
-  [13.7756,100.5404], // Ari
-  [13.7648,100.5374], // Sanam Pao
-  [13.7555,100.5350], // Victory Monument
-  [13.7498,100.5336], // Phaya Thai
-  [13.7461,100.5341], // Ratchathewi
-  [13.7461,100.5341], // Siam (interchange)
-  [13.7443,100.5492], // Chit Lom
-  [13.7413,100.5565], // Phloen Chit
-  [13.7381,100.5619], // Nana
+  [13.7943,100.5495], // Saphan Khwai
+  [13.7792,100.5448], // Ari
+  [13.7698,100.5415], // Sanam Pao
+  [13.7627,100.5384], // Victory Monument
+  [13.7565,100.5345], // Phaya Thai
+  [13.7517,100.5326], // Ratchathewi
+  [13.7459,100.5339], // Siam
+  [13.7443,100.5422], // Chit Lom
+  [13.7434,100.5487], // Phloen Chit
+  [13.7406,100.5555], // Nana
   [13.7369,100.5604], // Asok
   [13.7303,100.5697], // Phrom Phong
   [13.7255,100.5793], // Thong Lo
@@ -521,25 +779,49 @@ const BTS_SUKHUMVIT = [
   [13.7117,100.5946], // Phra Khanong
   [13.7025,100.6008], // On Nut
 ];
+// ── BTS Silom (vert foncé) ──────────────────────────────────
 const BTS_SILOM = [
-  [13.7459,100.5291], // National Stadium
-  [13.7461,100.5341], // Siam (interchange)
-  [13.7282,100.5327], // Sala Daeng
-  [13.7228,100.5271], // Chong Nonsi
-  [13.7165,100.5253], // Saint Louis
-  [13.7136,100.5230], // Surasak
+  [13.7465,100.5289], // National Stadium
+  [13.7459,100.5339], // Siam
+  [13.7405,100.5392], // Ratchadamri
+  [13.7290,100.5340], // Sala Daeng
+  [13.7236,100.5278], // Chong Nonsi
+  [13.7181,100.5198], // Surasak
   [13.7187,100.5142], // Saphan Taksin
 ];
-// Stations clés à afficher
+// ── MRT Blue Line ───────────────────────────────────────────
+const MRT_BLUE = [
+  [13.7378,100.5167], // Hua Lamphong
+  [13.7327,100.5285], // Sam Yan
+  [13.7282,100.5350], // Silom
+  [13.7280,100.5458], // Lumphini
+  [13.7226,100.5554], // Khlong Toei
+  [13.7257,100.5596], // Queen Sirikit
+  [13.7362,100.5607], // Sukhumvit
+  [13.7486,100.5637], // Phetchaburi
+  [13.7577,100.5668], // Phra Ram 9
+  [13.7651,100.5709], // Thailand Cultural Centre
+  [13.7773,100.5738], // Huai Khwang
+  [13.7890,100.5741], // Sutthisan
+  [13.8059,100.5737], // Lat Phrao
+  [13.8119,100.5611], // Phahon Yothin
+  [13.8023,100.5536], // Chatuchak Park
+];
+// ── Stations clés à afficher ────────────────────────────────
 const BTS_STATIONS = [
-  {pos:[13.7756,100.5404], name:'Ari'},
-  {pos:[13.7443,100.5492], name:'Chit Lom'},
-  {pos:[13.7461,100.5341], name:'Siam'},
-  {pos:[13.7369,100.5604], name:'Asok'},
-  {pos:[13.7303,100.5697], name:'Phrom Phong'},
-  {pos:[13.7255,100.5793], name:'Thong Lo'},
-  {pos:[13.7282,100.5327], name:'Sala Daeng'},
-  {pos:[13.7025,100.6008], name:'On Nut'},
+  {pos:[13.7792,100.5448], name:'Ari',       type:'bts'},
+  {pos:[13.7627,100.5384], name:'Victory M.', type:'bts'},
+  {pos:[13.7459,100.5339], name:'Siam',      type:'bts'},
+  {pos:[13.7443,100.5422], name:'Chit Lom',  type:'bts'},
+  {pos:[13.7369,100.5604], name:'Asok',      type:'bts'},
+  {pos:[13.7303,100.5697], name:'Phrom Phong',type:'bts'},
+  {pos:[13.7255,100.5793], name:'Thong Lo',  type:'bts'},
+  {pos:[13.7202,100.5861], name:'Ekkamai',   type:'bts'},
+  {pos:[13.7025,100.6008], name:'On Nut',    type:'bts'},
+  {pos:[13.7290,100.5340], name:'Sala Daeng', type:'bts'},
+  {pos:[13.7577,100.5668], name:'Rama 9',    type:'mrt'},
+  {pos:[13.7773,100.5738], name:'Huai Khwang',type:'mrt'},
+  {pos:[13.8059,100.5737], name:'Lat Phrao',  type:'mrt'},
 ];
 
 // ── BUDGET CONFIG ────────────────────────────────────────────
@@ -572,76 +854,95 @@ function fmtEur(thb){
 }
 
 // ── STATE ────────────────────────────────────────────────────
-let type=null,bkk=false,bVal=30000;
+let type=null,mapCity=null,bVal=30000;
 let zones=[],dontKnow=false,si=0;
 let leafletMap=null,hoodLayers={},mapInited=false;
 
 function steps(){
   const s=[0,1,2,3,4,5];
   if(type==='louer') s.push(6,7);
-  if(bkk) s.push(8);
+  if(mapCity) s.push(8);
   s.push(9,10);
   return s;
 }
 function totalSteps(){ return steps().length - 1; } // exclude intro
 
 // ── MAP ──────────────────────────────────────────────────────
+let lastMapCity=null;
 function initMap(){
-  if(mapInited){ setTimeout(()=>leafletMap.invalidateSize(),80); return; }
-  mapInited=true;
+  const city=CITY_DATA[mapCity];
+  if(!city) return;
 
-  leafletMap=L.map('bkk-map',{scrollWheelZoom:false,tap:true,attributionControl:true,zoomControl:true});
+  // Si même ville et déjà initialisée, juste resize
+  if(mapInited && lastMapCity===mapCity){ setTimeout(()=>leafletMap.invalidateSize(),80); return; }
 
-  // CartoDB Positron — épuré comme Google Maps light
+  // Détruire l'ancienne carte si on change de ville
+  if(leafletMap){ leafletMap.remove(); leafletMap=null; }
+  hoodLayers={}; zones=[]; dontKnow=false; renderTags();
+  mapInited=true; lastMapCity=mapCity;
+
+  // Hauteur adaptée : Thaïlande est très allongée
+  document.getElementById('city-map').style.height = mapCity==='thailand' ? '480px' : '360px';
+
+  leafletMap=L.map('city-map',{scrollWheelZoom:false,tap:true,attributionControl:true,zoomControl:true})
+    .setView([13.755,100.557],12);
+
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
     attribution:'© <a href="https://openstreetmap.org/copyright">OSM</a> © <a href="https://carto.com">CARTO</a>',
     subdomains:'abcd',maxZoom:19
   }).addTo(leafletMap);
 
-  // ── BTS SUKHUMVIT (bleu) ──
-  L.polyline(BTS_SUKHUMVIT,{color:'#2563EB',weight:4,opacity:.85,lineJoin:'round'}).addTo(leafletMap);
-  // ── BTS SILOM (vert) ──
-  L.polyline(BTS_SILOM,{color:'#16A34A',weight:4,opacity:.85,lineJoin:'round'}).addTo(leafletMap);
-
-  // ── STATIONS ──
-  BTS_STATIONS.forEach(s=>{
-    L.circleMarker(s.pos,{
-      radius:5,fillColor:'#fff',fillOpacity:1,
-      color:'#1e40af',weight:2,interactive:false
-    }).addTo(leafletMap);
-  });
-
-  // ── ZONES CLIQUABLES (GeoJSON) ──
-  L.geoJSON(HOODS_GEO,{
+  // ── ZONES CLIQUABLES ──
+  L.geoJSON(city.geo,{
     style: feature=>({
       color: feature.properties.border,
       weight: 1.5,
       fillColor: feature.properties.color,
-      fillOpacity: 0.48,
+      fillOpacity: 0.40,
       opacity: 0.9
     }),
     onEachFeature: (feature,layer)=>{
       const h=feature.properties;
       layer.bindTooltip(
-        `<div style="text-align:center"><strong>${h.name}</strong><br><span class="sub" style="font-size:9.5px;font-weight:600;opacity:.7">${h.sub}</span></div>`,
+        h.sub ? `<div style="text-align:center"><strong>${h.name}</strong><br><span style="font-size:9.5px;font-weight:600;opacity:.65">${h.sub}</span></div>`
+              : `<strong>${h.name}</strong>`,
         {permanent:true,direction:'center',className:'hlabel',interactive:false}
       );
-      layer.on('mouseover',()=>{ if(!zones.includes(h.id)) layer.setStyle({fillOpacity:.70,weight:2.5}); });
-      layer.on('mouseout',()=>{ if(!zones.includes(h.id)) layer.setStyle({fillOpacity:.48,weight:1.5}); });
+      layer.on('mouseover',()=>{ if(!zones.includes(h.id)) layer.setStyle({fillOpacity:.65,weight:2.5}); });
+      layer.on('mouseout',()=>{ if(!zones.includes(h.id)) layer.setStyle({fillOpacity:.40,weight:1.5}); });
       layer.on('click',()=>toggleZone(h.id));
       hoodLayers[h.id]=layer;
     }
   }).addTo(leafletMap);
 
-  // Auto-zoom sur tous les quartiers
-  const allCoords=HOODS_GEO.features.flatMap(f=>f.geometry.coordinates[0].map(c=>[c[1],c[0]]));
+  // ── TRANSPORT (Bangkok uniquement) ──
+  const legend=document.getElementById('map-legend');
+  if(city.transit){
+    L.polyline(BTS_SUKHUMVIT,{color:'#22C55E',weight:4,opacity:.9,lineJoin:'round'}).addTo(leafletMap);
+    L.polyline(BTS_SILOM,{color:'#15803D',weight:4,opacity:.9,lineJoin:'round'}).addTo(leafletMap);
+    L.polyline(MRT_BLUE,{color:'#3B82F6',weight:4,opacity:.9,lineJoin:'round',dashArray:'8 4'}).addTo(leafletMap);
+    BTS_STATIONS.forEach(s=>{
+      const isMrt = s.type==='mrt';
+      L.circleMarker(s.pos,{
+        radius:4.5, fillColor:'#fff', fillOpacity:1,
+        color: isMrt ? '#3B82F6' : '#15803D',
+        weight:2, interactive:false
+      }).addTo(leafletMap);
+    });
+    legend.style.display='';
+  } else {
+    legend.style.display='none';
+  }
+
+  // Auto-zoom
+  const allCoords=city.geo.features.flatMap(f=>f.geometry.coordinates[0].map(c=>[c[1],c[0]]));
   leafletMap.fitBounds(allCoords,{padding:[20,20]});
 }
 
 // ── ZONE TOGGLE ──────────────────────────────────────────────
 function toggleZone(id){
   if(dontKnow) return;
-  const h=HOODS.find(x=>x.id===id), layer=hoodLayers[id];
+  const h=getCurrentHoods().find(x=>x.id===id), layer=hoodLayers[id];
   const i=zones.indexOf(id);
   if(i===-1){
     zones.push(id);
@@ -654,7 +955,7 @@ function toggleZone(id){
   renderTags();
 }
 
-function getZoneNames(){ return zones.map(id=>HOODS.find(h=>h.id===id)?.name).filter(Boolean); }
+function getZoneNames(){ return zones.map(id=>getCurrentHoods().find(h=>h.id===id)?.name).filter(Boolean); }
 
 function renderTags(){
   const c=document.getElementById('tags');
@@ -663,7 +964,7 @@ function renderTags(){
   if(zones.length===0&&!dontKnow){ nosel.style.display=''; return; }
   nosel.style.display='none';
   zones.forEach(id=>{
-    const h=HOODS.find(x=>x.id===id);
+    const h=getCurrentHoods().find(x=>x.id===id);
     const d=document.createElement('div');
     d.className='tag';
     d.style.cssText=`background:${h.color};border-color:${h.border}`;
@@ -674,7 +975,7 @@ function renderTags(){
 
 function removeZone(id){
   zones=zones.filter(z=>z!==id);
-  const h=HOODS.find(x=>x.id===id);
+  const h=getCurrentHoods().find(x=>x.id===id);
   if(h&&hoodLayers[id]) hoodLayers[id].setStyle({fillOpacity:.48,weight:1.5,color:h.border});
   renderTags();
 }
@@ -683,7 +984,7 @@ function toggleDK(){
   dontKnow=!dontKnow;
   document.getElementById('c-dk').classList.toggle('sel',dontKnow);
   if(dontKnow){
-    zones.forEach(id=>{ const h=HOODS.find(x=>x.id===id); if(h&&hoodLayers[id]) hoodLayers[id].setStyle({fillOpacity:.48,weight:1.5,color:h.border}); });
+    zones.forEach(id=>{ const h=getCurrentHoods().find(x=>x.id===id); if(h&&hoodLayers[id]) hoodLayers[id].setStyle({fillOpacity:.48,weight:1.5,color:h.border}); });
     zones=[];
     renderTags();
     document.getElementById('nosel').style.display='none';
@@ -743,13 +1044,13 @@ function pickType(t){
   setTimeout(next,280);
 }
 
-function pick1(el,group,isBkk){
+function pick1(el,group,cityVal){
   el.parentElement.querySelectorAll('.card').forEach(c=>c.classList.remove('sel'));
   el.classList.add('sel');
   if(group==='ville'){
-    bkk=!!isBkk;
+    mapCity=cityVal;
     document.getElementById('q8n').textContent=type==='louer'?'8':'6';
-    document.getElementById('q9n').textContent=type==='louer'?(bkk?'9':'8'):(bkk?'7':'6');
+    document.getElementById('q9n').textContent=type==='louer'?(mapCity?'9':'8'):(mapCity?'7':'6');
   }
   refreshNav();
   setTimeout(next,280);
@@ -853,7 +1154,7 @@ function submit(){
     lines.push(`📅 *Emménagement :* ${document.getElementById('ddate').value||'Non précisé'}`);
     lines.push(`⏱️ *Durée :* ${q(7)}`);
   }
-  if(bkk) lines.push(`🏙️ *Quartiers :* ${quartiers}`);
+  if(mapCity) lines.push(`🏙️ *Quartiers :* ${quartiers}`);
   const crit=document.getElementById('criteres').value.trim();
   if(crit) lines.push(`📝 *Critères :* ${crit}`);
   lines.push(``,`👤 *Nom :* ${document.getElementById('nom').value.trim()}`);
@@ -871,7 +1172,7 @@ function submit(){
       budgetEur: fmtEur(bVal),
       dateEmmenagement: type==='louer'?(document.getElementById('ddate').value||''):'',
       duree: type==='louer'?q(7):'',
-      quartiers: bkk?quartiers:'',
+      quartiers: mapCity?quartiers:'',
       criteres: document.getElementById('criteres').value.trim(),
       nom: document.getElementById('nom').value.trim(),
       tel: document.getElementById('tel').value.trim()
@@ -895,7 +1196,7 @@ function submit(){
     w3f.append('Emménagement', document.getElementById('ddate').value||'Non précisé');
     w3f.append('Durée', q(7));
   }
-  if(bkk) w3f.append('Quartiers', quartiers);
+  if(mapCity) w3f.append('Quartiers', quartiers);
   const crit2=document.getElementById('criteres').value.trim();
   if(crit2) w3f.append('Critères', crit2);
   w3f.append('Nom', document.getElementById('nom').value.trim());

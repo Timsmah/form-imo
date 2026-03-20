@@ -4,8 +4,8 @@
     {
       "name": "Survey (static)",
       "runtimeExecutable": "ruby",
-      "runtimeArgs": ["-run", "-e", "httpd", "--", "-p", "8080", "/tmp/survey_serve"],
-      "port": 8080
+      "runtimeArgs": ["-run", "-e", "httpd", "--", "-p", "8087", "/tmp/survey"],
+      "port": 8087
     }
   ]
 }
