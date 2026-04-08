@@ -361,10 +361,19 @@ textarea{min-height:110px;resize:vertical}
   <div class="qlabel">Question 7 / <span class="tot"></span></div>
   <div class="qtitle">Durée du contrat ?</div>
   <div class="grid" style="margin-top:4px">
-    <div class="card" onclick="pick1(this,'dur')"><div class="chk"></div><div class="card-txt">1 an</div></div>
-    <div class="card" onclick="pick1(this,'dur')"><div class="chk"></div><div class="card-txt">6 mois</div></div>
-    <div class="card" onclick="pick1(this,'dur')"><div class="chk"></div><div class="card-txt">3 mois</div></div>
-    <div class="card" onclick="pick1(this,'dur')"><div class="chk"></div><div class="card-txt">Autre</div></div>
+    <div class="card" onclick="pickDur(this,'1 an')"><div class="chk"></div><div class="card-txt">1 an</div></div>
+    <div class="card" onclick="pickDur(this,'6 mois')"><div class="chk"></div><div class="card-txt">6 mois</div></div>
+    <div class="card" onclick="pickDur(this,'3 mois')"><div class="chk"></div><div class="card-txt">3 mois</div></div>
+    <div class="card" id="dur-autre-card" onclick="pickDurAutre(this)"><div class="chk"></div><div class="card-txt">Autre</div></div>
+  </div>
+  <div id="dur-autre-panel" style="display:none;margin-top:16px;padding:16px;background:var(--card-bg);border-radius:var(--r);border:1px solid var(--border)">
+    <label style="font-size:14px;font-weight:600;color:var(--txt);display:block;margin-bottom:8px">Combien de mois ?</label>
+    <select id="dur-mois" onchange="onDurMois()" style="width:100%;padding:12px 14px;border-radius:8px;border:1px solid var(--border);font-size:15px;background:#fff;color:var(--txt);appearance:auto">
+      <option value="">— Choisir —</option>
+    </select>
+    <div id="dur-err" style="display:none;margin-top:12px;padding:12px 14px;background:#FEE2E2;border-radius:8px;color:#DC2626;font-size:13px;font-weight:600;line-height:1.4">
+      Nous ne travaillons pas avec les contrats de moins de 3 mois.
+    </div>
   </div>
 </div>
 
@@ -375,9 +384,9 @@ textarea{min-height:110px;resize:vertical}
   <div class="qdesc">Touchez les zones sur la carte pour les sélectionner</div>
   <div id="city-map"></div>
   <div class="map-legend" id="map-legend">
-    <div class="legend-item"><span class="legend-line" style="background:#22C55E"></span> BTS Sukhumvit</div>
-    <div class="legend-item"><span class="legend-line" style="background:#15803D"></span> BTS Silom</div>
-    <div class="legend-item"><span class="legend-line" style="background:#3B82F6;background-image:repeating-linear-gradient(90deg,#3B82F6 0,#3B82F6 6px,transparent 6px,transparent 10px)"></span> MRT Blue</div>
+    <div class="legend-item"><span class="legend-line" style="background:#16A34A;height:4px"></span> BTS Sukhumvit</div>
+    <div class="legend-item"><span class="legend-line" style="background:#B45309;height:4px"></span> BTS Silom</div>
+    <div class="legend-item"><span class="legend-line" style="background:#2563EB;height:4px;background-image:repeating-linear-gradient(90deg,#2563EB 0,#2563EB 6px,transparent 6px,transparent 10px)"></span> MRT Blue</div>
   </div>
   <div class="tags" id="tags"><span class="no-sel" id="nosel">Aucun quartier sélectionné</span></div>
   <div style="margin-top:14px">
@@ -403,7 +412,7 @@ textarea{min-height:110px;resize:vertical}
   <div class="qtitle">Vos coordonnées</div>
   <div class="qdesc">Pour vous recontacter rapidement sur WhatsApp</div>
   <div class="igroup"><label class="ilabel">Nom et prénom <span style="color:var(--gold);font-weight:700">*</span></label><input type="text" id="nom" maxlength="60" required placeholder="Thomas Dupont" oninput="refreshNav()"></div>
-  <div class="igroup"><label class="ilabel">Téléphone / WhatsApp <span style="color:var(--gold);font-weight:700">*</span></label><input type="tel" id="tel" maxlength="20" required placeholder="+33 6 12 34 56 78" oninput="filterTel(this)"></div>
+  <div class="igroup"><label class="ilabel">Téléphone / WhatsApp <span style="color:var(--gold);font-weight:700">*</span></label><input type="tel" id="tel" maxlength="15" inputmode="numeric" required placeholder="33612345678" oninput="filterTel(this)"><div id="tel-err" style="color:#DC2626;font-size:12px;margin-top:4px;display:none">Merci de renseigner votre numéro</div></div>
 </div>
 
 <!-- SUCCESS -->
@@ -761,6 +770,11 @@ function getCurrentHoods(){ return (CITY_DATA[mapCity]?.geo?.features||[]).map(f
 
 // ── BTS Sukhumvit (vert clair) ──────────────────────────────
 const BTS_SUKHUMVIT = [
+  [13.8480,100.5694], // Khu Khot (terminus nord)
+  [13.8385,100.5667], // Royal Thai Air Force Museum
+  [13.8280,100.5640], // Saphan Mai
+  [13.8190,100.5610], // Phahon Yothin 59
+  [13.8120,100.5570], // Ha Yaek Lat Phrao
   [13.8023,100.5526], // Mo Chit
   [13.7943,100.5495], // Saphan Khwai
   [13.7792,100.5448], // Ari
@@ -809,19 +823,19 @@ const MRT_BLUE = [
 ];
 // ── Stations clés à afficher ────────────────────────────────
 const BTS_STATIONS = [
-  {pos:[13.7792,100.5448], name:'Ari',       type:'bts'},
-  {pos:[13.7627,100.5384], name:'Victory M.', type:'bts'},
-  {pos:[13.7459,100.5339], name:'Siam',      type:'bts'},
-  {pos:[13.7443,100.5422], name:'Chit Lom',  type:'bts'},
-  {pos:[13.7369,100.5604], name:'Asok',      type:'bts'},
-  {pos:[13.7303,100.5697], name:'Phrom Phong',type:'bts'},
-  {pos:[13.7255,100.5793], name:'Thong Lo',  type:'bts'},
-  {pos:[13.7202,100.5861], name:'Ekkamai',   type:'bts'},
-  {pos:[13.7025,100.6008], name:'On Nut',    type:'bts'},
-  {pos:[13.7290,100.5340], name:'Sala Daeng', type:'bts'},
-  {pos:[13.7577,100.5668], name:'Rama 9',    type:'mrt'},
-  {pos:[13.7773,100.5738], name:'Huai Khwang',type:'mrt'},
-  {pos:[13.8059,100.5737], name:'Lat Phrao',  type:'mrt'},
+  {pos:[13.7792,100.5448], name:'Ari',       type:'bts', line:'sukhumvit'},
+  {pos:[13.7627,100.5384], name:'Victory M.', type:'bts', line:'sukhumvit'},
+  {pos:[13.7459,100.5339], name:'Siam',      type:'bts', line:'sukhumvit'},
+  {pos:[13.7443,100.5422], name:'Chit Lom',  type:'bts', line:'sukhumvit'},
+  {pos:[13.7369,100.5604], name:'Asok',      type:'bts', line:'sukhumvit'},
+  {pos:[13.7303,100.5697], name:'Phrom Phong',type:'bts', line:'sukhumvit'},
+  {pos:[13.7255,100.5793], name:'Thong Lo',  type:'bts', line:'sukhumvit'},
+  {pos:[13.7202,100.5861], name:'Ekkamai',   type:'bts', line:'sukhumvit'},
+  {pos:[13.7025,100.6008], name:'On Nut',    type:'bts', line:'sukhumvit'},
+  {pos:[13.7290,100.5340], name:'Sala Daeng', type:'bts', line:'silom'},
+  {pos:[13.7577,100.5668], name:'Rama 9',    type:'mrt', line:'mrt'},
+  {pos:[13.7773,100.5738], name:'Huai Khwang',type:'mrt', line:'mrt'},
+  {pos:[13.8059,100.5737], name:'Lat Phrao',  type:'mrt', line:'mrt'},
 ];
 
 // ── BUDGET CONFIG ────────────────────────────────────────────
@@ -918,15 +932,16 @@ function initMap(){
   // ── TRANSPORT (Bangkok uniquement) ──
   const legend=document.getElementById('map-legend');
   if(city.transit){
-    L.polyline(BTS_SUKHUMVIT,{color:'#22C55E',weight:4,opacity:.9,lineJoin:'round'}).addTo(leafletMap);
-    L.polyline(BTS_SILOM,{color:'#15803D',weight:4,opacity:.9,lineJoin:'round'}).addTo(leafletMap);
-    L.polyline(MRT_BLUE,{color:'#3B82F6',weight:4,opacity:.9,lineJoin:'round',dashArray:'8 4'}).addTo(leafletMap);
+    // Lignes épaisses et bien visibles
+    L.polyline(BTS_SUKHUMVIT,{color:'#16A34A',weight:4,opacity:1,lineJoin:'round'}).addTo(leafletMap);
+    L.polyline(BTS_SILOM,{color:'#B45309',weight:4,opacity:1,lineJoin:'round'}).addTo(leafletMap);
+    L.polyline(MRT_BLUE,{color:'#2563EB',weight:4,opacity:1,lineJoin:'round',dashArray:'10 5'}).addTo(leafletMap);
     BTS_STATIONS.forEach(s=>{
       const isMrt = s.type==='mrt';
       L.circleMarker(s.pos,{
-        radius:4.5, fillColor:'#fff', fillOpacity:1,
-        color: isMrt ? '#3B82F6' : '#15803D',
-        weight:2, interactive:false
+        radius:5, fillColor:'#fff', fillOpacity:1,
+        color: isMrt ? '#2563EB' : (s.line==='silom' ? '#B45309' : '#16A34A'),
+        weight:2.5, interactive:false
       }).addTo(leafletMap);
     });
     legend.style.display='';
@@ -1056,13 +1071,37 @@ function pick1(el,group,cityVal){
   setTimeout(next,280);
 }
 
+function pickDur(el, val){
+  document.querySelectorAll('#s7 .card').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+  document.getElementById('dur-autre-panel').style.display='none';
+  document.getElementById('dur-err').style.display='none';
+  refreshNav();
+  setTimeout(next,280);
+}
+
+function pickDurAutre(el){
+  document.querySelectorAll('#s7 .card').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+  const panel=document.getElementById('dur-autre-panel');
+  panel.style.display='block';
+  const sel=document.getElementById('dur-mois');
+  if(sel.options.length===1){
+    for(let m=1;m<=24;m++) sel.add(new Option(m+(m===1?' mois':' mois'), m));
+  }
+  refreshNav();
+}
+
+function onDurMois(){
+  const m=parseInt(document.getElementById('dur-mois').value)||0;
+  document.getElementById('dur-err').style.display=(m>0&&m<3)?'block':'none';
+  refreshNav();
+}
+
 function filterTel(el){
-  // Garde uniquement chiffres, +, espaces, tirets
   const pos=el.selectionStart;
   const prev=el.value;
-  el.value=el.value.replace(/[^\d+\s\-]/g,'');
-  // Rétablit le + uniquement en première position
-  el.value=el.value.replace(/(?!^)\+/g,'');
+  el.value=el.value.replace(/\D/g,'');
   if(el.value!==prev) el.setSelectionRange(pos-1,pos-1);
   refreshNav();
 }
@@ -1091,7 +1130,14 @@ function valid(sid){
     case 1:case 2:case 3:case 4: return sel();
     case 5: return true;
     case 6: return document.getElementById('ddate').value!=='';
-    case 7: return sel();
+    case 7: {
+      const autreCard=document.getElementById('dur-autre-card');
+      if(autreCard?.classList.contains('sel')){
+        const m=parseInt(document.getElementById('dur-mois').value)||0;
+        return m>=3;
+      }
+      return sel();
+    }
     case 8:case 9: return true;
     case 10:
       return document.getElementById('nom').value.trim()!==''&&
@@ -1134,12 +1180,29 @@ function showStep(idx){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-function next(){ const S=steps(); if(si===S.length-1){submit();return;} showStep(si+1); }
+function next(){
+  const S=steps();
+  // Validation téléphone avant envoi
+  if(S[si]===10){
+    const telEl=document.getElementById('tel');
+    const errEl=document.getElementById('tel-err');
+    if(!telEl.value.trim()){errEl.style.display='block';telEl.focus();return;}
+    errEl.style.display='none';
+  }
+  if(si===S.length-1){submit();return;}
+  showStep(si+1);
+}
 function prev(){ if(si===0)return; showStep(si-1); }
 
 // ── SUBMIT ───────────────────────────────────────────────────
 function submit(){
-  const q=s=>document.querySelector(`#s${s} .card.sel .card-txt`)?.textContent?.trim()||'';
+  const q=s=>{
+    if(s===7&&document.getElementById('dur-autre-card')?.classList.contains('sel')){
+      const m=document.getElementById('dur-mois').value;
+      return m?m+' mois':'Autre';
+    }
+    return document.querySelector(`#s${s} .card.sel .card-txt`)?.textContent?.trim()||'';
+  };
   const quartiers=dontKnow?'Je ne sais pas encore':(zones.length?getZoneNames().join(', '):'Non précisé');
   const lines=[
     `🇹🇭 *Nouveau formulaire*`,``,
