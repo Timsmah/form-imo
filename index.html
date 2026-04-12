@@ -809,10 +809,10 @@ const CITY_DATA = {
 
 function getCurrentHoods(){ return (CITY_DATA[mapCity]?.geo?.features||[]).map(f=>f.properties); }
 
-// ── BTS Sukhumvit (vert clair) ──────────────────────────────
+// ── BTS Sukhumvit ────────────────────────────────────────────
 const BTS_SUKHUMVIT = [
-  [13.8480,100.5694], // Khu Khot (terminus nord)
-  [13.8385,100.5667], // Royal Thai Air Force Museum
+  [13.8480,100.5694], // Khu Khot
+  [13.8385,100.5667], // Royal Thai AF
   [13.8280,100.5640], // Saphan Mai
   [13.8190,100.5610], // Phahon Yothin 59
   [13.8120,100.5570], // Ha Yaek Lat Phrao
@@ -833,8 +833,12 @@ const BTS_SUKHUMVIT = [
   [13.7202,100.5861], // Ekkamai
   [13.7117,100.5946], // Phra Khanong
   [13.7025,100.6008], // On Nut
+  [13.6887,100.6086], // Udomsuk
+  [13.6697,100.6100], // Bang Na
+  [13.6444,100.6003], // Bearing
+  [13.6340,100.5965], // Samrong
 ];
-// ── BTS Silom (vert foncé) ──────────────────────────────────
+// ── BTS Silom ────────────────────────────────────────────────
 const BTS_SILOM = [
   [13.7465,100.5289], // National Stadium
   [13.7459,100.5339], // Siam
@@ -843,40 +847,66 @@ const BTS_SILOM = [
   [13.7236,100.5278], // Chong Nonsi
   [13.7181,100.5198], // Surasak
   [13.7187,100.5142], // Saphan Taksin
+  [13.7228,100.5074], // Krung Thon Buri
+  [13.7217,100.5024], // Wongwian Yai
+  [13.7176,100.4960], // Pho Nimit
+  [13.7154,100.4900], // Talat Phlu
+  [13.7108,100.4834], // Wutthakat
+  [13.7055,100.4794], // Bang Wa
 ];
-// ── MRT Blue Line ───────────────────────────────────────────
+// ── MRT Blue Line (boucle complète) ─────────────────────────
 const MRT_BLUE = [
-  [13.7378,100.5167], // Hua Lamphong
-  [13.7327,100.5285], // Sam Yan
-  [13.7282,100.5350], // Silom
-  [13.7280,100.5458], // Lumphini
-  [13.7226,100.5554], // Khlong Toei
-  [13.7257,100.5596], // Queen Sirikit
-  [13.7362,100.5607], // Sukhumvit
-  [13.7486,100.5637], // Phetchaburi
-  [13.7577,100.5668], // Phra Ram 9
-  [13.7651,100.5709], // Thailand Cultural Centre
-  [13.7773,100.5738], // Huai Khwang
-  [13.7890,100.5741], // Sutthisan
-  [13.8059,100.5737], // Lat Phrao
-  [13.8119,100.5611], // Phahon Yothin
+  // Arc est (nord→sud)
   [13.8023,100.5536], // Chatuchak Park
+  [13.8059,100.5737], // Lat Phrao
+  [13.7890,100.5741], // Sutthisan
+  [13.7773,100.5738], // Huai Khwang
+  [13.7651,100.5709], // Thailand Cultural Centre
+  [13.7577,100.5668], // Phra Ram 9
+  [13.7486,100.5637], // Phetchaburi
+  [13.7362,100.5607], // Sukhumvit
+  [13.7257,100.5596], // Queen Sirikit
+  [13.7226,100.5554], // Khlong Toei
+  [13.7280,100.5458], // Lumphini
+  [13.7282,100.5350], // Silom
+  [13.7327,100.5285], // Sam Yan
+  [13.7378,100.5167], // Hua Lamphong
+  // Arc ouest (sud→nord)
+  [13.7311,100.5121], // Wat Mangkon
+  [13.7280,100.5047], // Sam Yot
+  [13.7234,100.4978], // Sanam Chai
+  [13.7132,100.4814], // Itsaraphap
+  [13.7005,100.4762], // Tha Phra
+  [13.7080,100.4756], // Bang Phai
+  [13.7167,100.4773], // Bang Khae
+  [13.7276,100.4811], // Phasi Charoen
+  [13.7390,100.4858], // Bang Wa (MRT)
+  [13.7486,100.4904], // Phetkasem 40
+  [13.7561,100.4994], // Phetkasem 48
+  [13.7657,100.5069], // Lak Song
+  [13.7751,100.5136], // Bang Kae
+  [13.7889,100.5238], // Fai Chai
+  [13.8019,100.5344], // Tao Poon
+  [13.8119,100.5611], // Phahon Yothin
+  [13.8023,100.5536], // Chatuchak Park (boucle fermée)
 ];
-// ── Stations clés à afficher ────────────────────────────────
+// ── Stations clés ────────────────────────────────────────────
 const BTS_STATIONS = [
-  {pos:[13.7792,100.5448], name:'Ari',       type:'bts', line:'sukhumvit'},
-  {pos:[13.7627,100.5384], name:'Victory M.', type:'bts', line:'sukhumvit'},
-  {pos:[13.7459,100.5339], name:'Siam',      type:'bts', line:'sukhumvit'},
-  {pos:[13.7443,100.5422], name:'Chit Lom',  type:'bts', line:'sukhumvit'},
-  {pos:[13.7369,100.5604], name:'Asok',      type:'bts', line:'sukhumvit'},
-  {pos:[13.7303,100.5697], name:'Phrom Phong',type:'bts', line:'sukhumvit'},
-  {pos:[13.7255,100.5793], name:'Thong Lo',  type:'bts', line:'sukhumvit'},
-  {pos:[13.7202,100.5861], name:'Ekkamai',   type:'bts', line:'sukhumvit'},
-  {pos:[13.7025,100.6008], name:'On Nut',    type:'bts', line:'sukhumvit'},
-  {pos:[13.7290,100.5340], name:'Sala Daeng', type:'bts', line:'silom'},
-  {pos:[13.7577,100.5668], name:'Rama 9',    type:'mrt', line:'mrt'},
-  {pos:[13.7773,100.5738], name:'Huai Khwang',type:'mrt', line:'mrt'},
-  {pos:[13.8059,100.5737], name:'Lat Phrao',  type:'mrt', line:'mrt'},
+  {pos:[13.7792,100.5448], name:'Ari',        line:'sukhumvit'},
+  {pos:[13.7627,100.5384], name:'Victory M.', line:'sukhumvit'},
+  {pos:[13.7459,100.5339], name:'Siam',       line:'sukhumvit'},
+  {pos:[13.7443,100.5422], name:'Chit Lom',   line:'sukhumvit'},
+  {pos:[13.7369,100.5604], name:'Asok',       line:'sukhumvit'},
+  {pos:[13.7303,100.5697], name:'Phrom Phong',line:'sukhumvit'},
+  {pos:[13.7255,100.5793], name:'Thong Lo',   line:'sukhumvit'},
+  {pos:[13.7202,100.5861], name:'Ekkamai',    line:'sukhumvit'},
+  {pos:[13.7025,100.6008], name:'On Nut',     line:'sukhumvit'},
+  {pos:[13.7290,100.5340], name:'Sala Daeng', line:'silom'},
+  {pos:[13.7187,100.5142], name:'Saphan Taksin',line:'silom'},
+  {pos:[13.7577,100.5668], name:'Rama 9',     line:'mrt'},
+  {pos:[13.7773,100.5738], name:'Huai Khwang',line:'mrt'},
+  {pos:[13.8059,100.5737], name:'Lat Phrao',  line:'mrt'},
+  {pos:[13.7378,100.5167], name:'Hua Lamphong',line:'mrt'},
 ];
 
 // ── BUDGET CONFIG ────────────────────────────────────────────
@@ -953,18 +983,16 @@ function initMap(){
       color: feature.properties.border,
       weight: 1.5,
       fillColor: feature.properties.color,
-      fillOpacity: 0.40,
-      opacity: 0.9
+      fillOpacity: 0.22,
+      opacity: 0.7
     }),
     onEachFeature: (feature,layer)=>{
       const h=feature.properties;
-      layer.bindTooltip(
-        h.sub ? `<div style="text-align:center"><strong>${h.name}</strong><br><span style="font-size:9.5px;font-weight:600;opacity:.65">${h.sub}</span></div>`
-              : `<strong>${h.name}</strong>`,
+      layer.bindTooltip(`<strong>${h.name}</strong>`,
         {permanent:true,direction:'center',className:'hlabel',interactive:false}
       );
-      layer.on('mouseover',()=>{ if(!zones.includes(h.id)) layer.setStyle({fillOpacity:.65,weight:2.5}); });
-      layer.on('mouseout',()=>{ if(!zones.includes(h.id)) layer.setStyle({fillOpacity:.40,weight:1.5}); });
+      layer.on('mouseover',()=>{ if(!zones.includes(h.id)) layer.setStyle({fillOpacity:.45,weight:2}); });
+      layer.on('mouseout',()=>{ if(!zones.includes(h.id)) layer.setStyle({fillOpacity:.22,weight:1.5}); });
       layer.on('click',()=>toggleZone(h.id));
       hoodLayers[h.id]=layer;
     }
@@ -973,16 +1001,15 @@ function initMap(){
   // ── TRANSPORT (Bangkok uniquement) ──
   const legend=document.getElementById('map-legend');
   if(city.transit){
-    // Lignes épaisses et bien visibles
-    L.polyline(BTS_SUKHUMVIT,{color:'#16A34A',weight:4,opacity:1,lineJoin:'round'}).addTo(leafletMap);
-    L.polyline(BTS_SILOM,{color:'#B45309',weight:4,opacity:1,lineJoin:'round'}).addTo(leafletMap);
-    L.polyline(MRT_BLUE,{color:'#2563EB',weight:4,opacity:1,lineJoin:'round',dashArray:'10 5'}).addTo(leafletMap);
+    L.polyline(BTS_SUKHUMVIT,{color:'#009344',weight:2.5,opacity:0.9,lineJoin:'round'}).addTo(leafletMap);
+    L.polyline(BTS_SILOM,{color:'#009344',weight:2.5,opacity:0.9,lineJoin:'round'}).addTo(leafletMap);
+    L.polyline(MRT_BLUE,{color:'#1A3FA6',weight:2.5,opacity:0.9,lineJoin:'round'}).addTo(leafletMap);
     BTS_STATIONS.forEach(s=>{
-      const isMrt = s.type==='mrt';
+      const isMrt = s.line==='mrt';
       L.circleMarker(s.pos,{
-        radius:5, fillColor:'#fff', fillOpacity:1,
-        color: isMrt ? '#2563EB' : (s.line==='silom' ? '#B45309' : '#16A34A'),
-        weight:2.5, interactive:false
+        radius:3, fillColor:'#fff', fillOpacity:1,
+        color: isMrt ? '#1A3FA6' : '#009344',
+        weight:1.5, interactive:false
       }).addTo(leafletMap);
     });
     legend.style.display='';
