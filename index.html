@@ -408,9 +408,9 @@ textarea{min-height:110px;resize:vertical}
   <div class="qdesc">Touchez les zones sur la carte pour les sélectionner</div>
   <div id="city-map"></div>
   <div class="map-legend" id="map-legend">
-    <div class="legend-item"><span class="legend-line" style="background:#16A34A;height:4px"></span> BTS Sukhumvit</div>
-    <div class="legend-item"><span class="legend-line" style="background:#B45309;height:4px"></span> BTS Silom</div>
-    <div class="legend-item"><span class="legend-line" style="background:#2563EB;height:4px;background-image:repeating-linear-gradient(90deg,#2563EB 0,#2563EB 6px,transparent 6px,transparent 10px)"></span> MRT Blue</div>
+    <div class="legend-item"><span class="legend-line" style="background:#009344;height:3px"></span> BTS Sukhumvit</div>
+    <div class="legend-item"><span class="legend-line" style="background:#FFCD00;height:3px"></span> BTS Silom</div>
+    <div class="legend-item"><span class="legend-line" style="background:#1A3FA6;height:3px"></span> MRT Blue</div>
   </div>
   <div class="tags" id="tags"><span class="no-sel" id="nosel">Aucun quartier sélectionné</span></div>
   <div style="margin-top:14px">
@@ -1002,13 +1002,13 @@ function initMap(){
   const legend=document.getElementById('map-legend');
   if(city.transit){
     L.polyline(BTS_SUKHUMVIT,{color:'#009344',weight:2.5,opacity:0.9,lineJoin:'round'}).addTo(leafletMap);
-    L.polyline(BTS_SILOM,{color:'#009344',weight:2.5,opacity:0.9,lineJoin:'round'}).addTo(leafletMap);
+    L.polyline(BTS_SILOM,{color:'#FFCD00',weight:2.5,opacity:0.9,lineJoin:'round'}).addTo(leafletMap);
     L.polyline(MRT_BLUE,{color:'#1A3FA6',weight:2.5,opacity:0.9,lineJoin:'round'}).addTo(leafletMap);
     BTS_STATIONS.forEach(s=>{
-      const isMrt = s.line==='mrt';
+      const lineColor = s.line==='mrt' ? '#1A3FA6' : s.line==='silom' ? '#FFCD00' : '#009344';
       L.circleMarker(s.pos,{
         radius:3, fillColor:'#fff', fillOpacity:1,
-        color: isMrt ? '#1A3FA6' : '#009344',
+        color: lineColor,
         weight:1.5, interactive:false
       }).addTo(leafletMap);
     });
