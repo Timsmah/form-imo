@@ -223,6 +223,28 @@ input[type=text],input[type=tel],input[type=date],textarea{
   box-shadow:0 0 0 1.5px var(--border);
 }
 input:focus,textarea:focus{box-shadow:0 0 0 2px var(--gold)}
+
+/* ── PHONE COUNTRY PICKER ────────────────────────────────── */
+.phone-wrap{display:flex;gap:8px;align-items:stretch}
+.phone-cc-wrap{
+  position:relative;display:flex;align-items:center;gap:5px;
+  padding:15px 12px;border-radius:var(--r);
+  background:var(--bg);
+  box-shadow:0 0 0 1.5px var(--border);
+  font-size:15px;font-weight:700;
+  white-space:nowrap;flex-shrink:0;
+  transition:box-shadow .18s;cursor:pointer;
+  user-select:none;
+}
+.phone-cc-wrap:focus-within{box-shadow:0 0 0 2px var(--gold)}
+.phone-cc-wrap select{
+  position:absolute;inset:0;opacity:0;cursor:pointer;
+  width:100%;height:100%;font-size:16px;
+}
+.phone-flag{font-size:20px;line-height:1}
+.phone-cc-code{font-size:14px;font-weight:700;color:var(--gold)}
+.phone-cc-arrow{font-size:10px;color:var(--muted);margin-left:1px}
+.phone-wrap input[type=tel]{flex:1;min-width:0}
 textarea{min-height:110px;resize:vertical}
 .ilabel{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;display:block}
 .igroup{margin-bottom:16px}
@@ -453,7 +475,38 @@ textarea{min-height:110px;resize:vertical}
   <div class="qtitle">Vos coordonnées</div>
   <div class="qdesc">Pour vous recontacter rapidement sur WhatsApp</div>
   <div class="igroup"><label class="ilabel">Nom et prénom <span style="color:var(--gold);font-weight:700">*</span></label><input type="text" id="nom" maxlength="60" required placeholder="Thomas Dupont" oninput="refreshNav()"></div>
-  <div class="igroup"><label class="ilabel">Téléphone / WhatsApp <span style="color:var(--gold);font-weight:700">*</span></label><input type="tel" id="tel" maxlength="15" inputmode="numeric" required placeholder="33612345678" oninput="filterTel(this)"><div id="tel-err" style="color:#DC2626;font-size:12px;margin-top:4px;display:none">Merci de renseigner votre numéro</div></div>
+  <div class="igroup"><label class="ilabel">Téléphone / WhatsApp <span style="color:var(--gold);font-weight:700">*</span></label>
+  <div class="phone-wrap">
+    <div class="phone-cc-wrap" id="phoneCCWrap">
+      <span class="phone-flag" id="phoneFlag">🇫🇷</span>
+      <span class="phone-cc-code" id="phoneCCLabel">+33</span>
+      <span class="phone-cc-arrow">▾</span>
+      <select id="countryCode" onchange="onCountryChange()">
+        <option value="+33" data-flag="🇫🇷" selected>🇫🇷 France (+33)</option>
+        <option value="+32" data-flag="🇧🇪">🇧🇪 Belgique (+32)</option>
+        <option value="+41" data-flag="🇨🇭">🇨🇭 Suisse (+41)</option>
+        <option value="+352" data-flag="🇱🇺">🇱🇺 Luxembourg (+352)</option>
+        <option value="+377" data-flag="🇲🇨">🇲🇨 Monaco (+377)</option>
+        <option value="+1-CA" data-flag="🇨🇦">🇨🇦 Canada (+1)</option>
+        <option value="+212" data-flag="🇲🇦">🇲🇦 Maroc (+212)</option>
+        <option value="+213" data-flag="🇩🇿">🇩🇿 Algérie (+213)</option>
+        <option value="+216" data-flag="🇹🇳">🇹🇳 Tunisie (+216)</option>
+        <option value="+44" data-flag="🇬🇧">🇬🇧 Royaume-Uni (+44)</option>
+        <option value="+49" data-flag="🇩🇪">🇩🇪 Allemagne (+49)</option>
+        <option value="+34" data-flag="🇪🇸">🇪🇸 Espagne (+34)</option>
+        <option value="+39" data-flag="🇮🇹">🇮🇹 Italie (+39)</option>
+        <option value="+31" data-flag="🇳🇱">🇳🇱 Pays-Bas (+31)</option>
+        <option value="+351" data-flag="🇵🇹">🇵🇹 Portugal (+351)</option>
+        <option value="+1-US" data-flag="🇺🇸">🇺🇸 États-Unis (+1)</option>
+        <option value="+66" data-flag="🇹🇭">🇹🇭 Thaïlande (+66)</option>
+        <option value="+61" data-flag="🇦🇺">🇦🇺 Australie (+61)</option>
+        <option value="+65" data-flag="🇸🇬">🇸🇬 Singapour (+65)</option>
+        <option value="+81" data-flag="🇯🇵">🇯🇵 Japon (+81)</option>
+      </select>
+    </div>
+    <input type="tel" id="tel" maxlength="15" inputmode="numeric" required placeholder="6 12 34 56 78" oninput="filterTel(this)">
+  </div>
+  <div id="tel-err" style="color:#DC2626;font-size:12px;margin-top:4px;display:none">Merci de renseigner votre numéro</div></div>
 </div>
 
 <!-- MODAL WARNING BUDGET 3 MOIS -->
@@ -1186,6 +1239,21 @@ function onDurMois(){
   refreshNav();
 }
 
+function onCountryChange(){
+  const sel=document.getElementById('countryCode');
+  const opt=sel.options[sel.selectedIndex];
+  document.getElementById('phoneFlag').textContent=opt.dataset.flag;
+  // Extraire le code numérique (gérer "+1-CA" et "+1-US")
+  const raw=sel.value.split('-')[0];
+  document.getElementById('phoneCCLabel').textContent=raw;
+}
+
+function getFullTel(){
+  const raw=(document.getElementById('countryCode')?.value||'+33').split('-')[0];
+  const dialCode=raw.replace('+','');
+  return dialCode + document.getElementById('tel').value.trim();
+}
+
 function filterTel(el){
   const pos=el.selectionStart;
   const prev=el.value;
@@ -1322,7 +1390,7 @@ function submit(){
   const crit=getCriteres();
   if(crit) lines.push(`📝 *Critères :* ${crit}`);
   lines.push(``,`👤 *Nom :* ${document.getElementById('nom').value.trim()}`);
-  lines.push(`📱 *Tel/WA :* ${document.getElementById('tel').value.trim()}`);
+  lines.push(`📱 *Tel/WA :* +${getFullTel()}`);
 
   // ── ENVOI GOOGLE SHEETS ──────────────────────────────────
   if(SHEET_URL){
@@ -1339,7 +1407,7 @@ function submit(){
       quartiers: mapCity?quartiers:'',
       criteres: getCriteres(),
       nom: document.getElementById('nom').value.trim(),
-      tel: document.getElementById('tel').value.trim()
+      tel: getFullTel()
     };
     fetch(SHEET_URL,{method:'POST',body:JSON.stringify(payload)}).catch(()=>{});
   }
@@ -1364,7 +1432,7 @@ function submit(){
   const crit2=getCriteres();
   if(crit2) w3f.append('Critères', crit2);
   w3f.append('Nom', document.getElementById('nom').value.trim());
-  w3f.append('Téléphone', document.getElementById('tel').value.trim());
+  w3f.append('Téléphone', '+'+getFullTel());
   fetch('https://api.web3forms.com/submit',{method:'POST',body:w3f}).catch(()=>{});
 
   const suc=document.getElementById('suc').cloneNode(true);
