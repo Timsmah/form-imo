@@ -16,6 +16,8 @@
 <meta name="twitter:title" content="Ton projet immo en Thaïlande 🇹🇭">
 <meta name="twitter:description" content="Location ou achat à Bangkok — dis-moi ce que tu cherches, je m'occupe du reste.">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
+<script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -525,6 +527,12 @@ textarea{min-height:110px;resize:vertical}
   <h2>C'est envoyé !</h2>
   <p>Merci d'avoir rempli le formulaire, nous vous recontactons au plus vite (1-2 jours maximum)</p>
   <p style="margin-top:12px;font-size:13px;color:var(--muted)">— Tim 🇹🇭</p>
+  <div style="margin-top:28px;width:100%;border-top:1px solid var(--border);padding-top:24px;text-align:center">
+    <p style="font-size:13px;color:var(--muted);margin-bottom:14px">Vous préférez en parler directement ?</p>
+    <button onclick="openCalendly()" style="display:inline-flex;align-items:center;gap:10px;background:var(--dark);color:#fff;padding:16px 28px;border-radius:14px;font-size:15px;font-weight:800;border:2px solid var(--gold);box-shadow:0 4px 18px rgba(21,19,31,.2);cursor:pointer;transition:transform .18s" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform=''">
+      📅 Réserver un appel avec Tim
+    </button>
+  </div>
 </div>
 
 </div>
@@ -1005,6 +1013,7 @@ function fmtEur(thb){
 let type=null,mapCity=null,bVal=30000;
 let zones=[],dontKnow=false,si=0;
 let leafletMap=null,hoodLayers={},mapInited=false;
+let submittedName='';
 
 function steps(){
   const s=[0,1,2,3,4,5];
@@ -1363,6 +1372,14 @@ function closeBudgetWarn(){
 }
 function prev(){ if(si===0)return; showStep(si-1); }
 
+// ── CALENDLY ─────────────────────────────────────────────────
+function openCalendly(){
+  const url='https://calendly.com/timthai2024/appel-projet-thailande-immobilier'
+    +(submittedName?'?name='+encodeURIComponent(submittedName):'');
+  if(window.Calendly) Calendly.initPopupWidget({url});
+  else window.open(url,'_blank');
+}
+
 // ── SUBMIT ───────────────────────────────────────────────────
 function submit(){
   const q=s=>{
@@ -1435,6 +1452,7 @@ function submit(){
   w3f.append('Téléphone', '+'+getFullTel());
   fetch('https://api.web3forms.com/submit',{method:'POST',body:w3f}).catch(()=>{});
 
+  submittedName=document.getElementById('nom').value.trim();
   const suc=document.getElementById('suc').cloneNode(true);
   document.getElementById('sw').innerHTML='';
   document.getElementById('nav').style.display='none';
