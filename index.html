@@ -1409,25 +1409,34 @@ function submit(){
   lines.push(``,`👤 *Nom :* ${document.getElementById('nom').value.trim()}`);
   lines.push(`📱 *Tel/WA :* +${getFullTel()}`);
 
+  // ── PAYLOAD COMMUN ───────────────────────────────────────
+  const payload={
+    projet: type==='louer'?'Location':'Achat',
+    localisation: q(1),
+    typeBien: q(2),
+    ville: q(3),
+    chambres: [...document.querySelectorAll('#s4 .card.sel .card-txt')].map(e=>e.textContent.trim()).join(', '),
+    budgetThb: bVal,
+    budgetEur: fmtEur(bVal),
+    dateEmmenagement: type==='louer'?(document.getElementById('ddate').value||''):'',
+    duree: type==='louer'?q(7):'',
+    quartiers: mapCity?quartiers:'',
+    criteres: getCriteres(),
+    nom: document.getElementById('nom').value.trim(),
+    tel: getFullTel()
+  };
+
   // ── ENVOI GOOGLE SHEETS ──────────────────────────────────
   if(SHEET_URL){
-    const payload={
-      projet: type==='louer'?'Location':'Achat',
-      localisation: q(1),
-      typeBien: q(2),
-      ville: q(3),
-      chambres: [...document.querySelectorAll('#s4 .card.sel .card-txt')].map(e=>e.textContent.trim()).join(', '),
-      budgetThb: bVal,
-      budgetEur: fmtEur(bVal),
-      dateEmmenagement: type==='louer'?(document.getElementById('ddate').value||''):'',
-      duree: type==='louer'?q(7):'',
-      quartiers: mapCity?quartiers:'',
-      criteres: getCriteres(),
-      nom: document.getElementById('nom').value.trim(),
-      tel: getFullTel()
-    };
     fetch(SHEET_URL,{method:'POST',body:JSON.stringify(payload)}).catch(()=>{});
   }
+
+  // ── ENVOI CRM ────────────────────────────────────────────
+  fetch('https://bkk.timthld.com/api/leads',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(payload)
+  }).catch(()=>{});
 
   // ── ENVOI WEB3FORMS ──────────────────────────────────────
   const w3f=new FormData();
