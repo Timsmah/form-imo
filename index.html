@@ -247,6 +247,26 @@ input:focus,textarea:focus{box-shadow:0 0 0 2px var(--gold)}
 .phone-cc-code{font-size:14px;font-weight:700;color:var(--gold)}
 .phone-cc-arrow{font-size:10px;color:var(--muted);margin-left:1px}
 .phone-wrap input[type=tel]{flex:1;min-width:0}
+
+/* ── CALENDLY STEP ───────────────────────────────────────── */
+.cal-choice-card{
+  border-radius:18px;padding:32px 24px;
+  background:var(--dark);border:2px solid var(--gold);
+  cursor:pointer;text-align:center;
+  box-shadow:0 6px 28px rgba(21,19,31,.22);
+  transition:transform .18s,box-shadow .18s;margin-top:8px;
+}
+.cal-choice-card:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(21,19,31,.32)}
+.cal-ci{font-size:44px;margin-bottom:14px}
+.cal-ct{font-size:19px;font-weight:900;color:#fff;margin-bottom:6px}
+.cal-cs{font-size:13px;color:rgba(255,255,255,.55);line-height:1.6}
+.cal-skip{
+  display:block;text-align:center;margin-top:22px;
+  background:none;border:none;color:var(--muted);
+  font-size:13px;cursor:pointer;padding:8px 16px;
+  text-decoration:underline;text-underline-offset:3px;
+  font-family:inherit;
+}
 textarea{min-height:110px;resize:vertical}
 .ilabel{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;display:block}
 .igroup{margin-bottom:16px}
@@ -521,18 +541,25 @@ textarea{min-height:110px;resize:vertical}
   </div>
 </div>
 
+<!-- 11 -->
+<div class="step" id="s11">
+  <div class="qlabel">Dernière étape</div>
+  <div class="qtitle">Comment on échange ?</div>
+  <div class="qdesc">Votre dossier est prêt — choisissez ce qui vous convient</div>
+  <div class="cal-choice-card" onclick="bookAndSubmit()" role="button" tabindex="0">
+    <div class="cal-ci">📅</div>
+    <div class="cal-ct">Réserver un appel avec Tim</div>
+    <div class="cal-cs">30 min · Gratuit · Sans engagement<br>Je vous rappelle à l'heure choisie</div>
+  </div>
+  <button type="button" class="cal-skip" onclick="submit()">Non merci, j'attends votre retour →</button>
+</div>
+
 <!-- SUCCESS -->
 <div class="success" id="suc">
   <img src="download.png" alt="Tim" style="width:100px;height:100px;border-radius:50%;object-fit:cover;object-position:center top;margin-bottom:24px;border:3px solid var(--gold);box-shadow:0 0 0 8px var(--gold-bg)">
   <h2>C'est envoyé !</h2>
   <p>Merci d'avoir rempli le formulaire, nous vous recontactons au plus vite (1-2 jours maximum)</p>
   <p style="margin-top:12px;font-size:13px;color:var(--muted)">— Tim 🇹🇭</p>
-  <div style="margin-top:28px;width:100%;border-top:1px solid var(--border);padding-top:24px;text-align:center">
-    <p style="font-size:13px;color:var(--muted);margin-bottom:14px">Vous préférez en parler directement ?</p>
-    <button onclick="openCalendly()" style="display:inline-flex;align-items:center;gap:10px;background:var(--dark);color:#fff;padding:16px 28px;border-radius:14px;font-size:15px;font-weight:800;border:2px solid var(--gold);box-shadow:0 4px 18px rgba(21,19,31,.2);cursor:pointer;transition:transform .18s" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform=''">
-      📅 Réserver un appel avec Tim
-    </button>
-  </div>
 </div>
 
 </div>
@@ -1019,7 +1046,7 @@ function steps(){
   const s=[0,1,2,3,4,5];
   if(type==='louer') s.push(6,7);
   if(mapCity) s.push(8);
-  s.push(9,10);
+  s.push(9,10,11);
   return s;
 }
 function totalSteps(){ return steps().length - 1; } // exclude intro
@@ -1307,6 +1334,7 @@ function valid(sid){
     case 10:
       return document.getElementById('nom').value.trim()!==''&&
              document.getElementById('tel').value.trim()!=='';
+    case 11: return false;
   }
   return true;
 }
@@ -1317,13 +1345,16 @@ function refreshNav(){
   const btnN=document.getElementById('btnN'), btnP=document.getElementById('btnP');
   btnP.disabled=si===0;
   btnN.disabled=!valid(sid);
-  if(si===S.length-1) btnN.textContent='Envoyer →';
-  else if(si===0) btnN.textContent='Commencer';
-  else btnN.textContent='Suivant →';
+  if(S[si]===11){ btnN.style.display='none'; }
+  else { btnN.style.display='';
+    if(si===S.length-1) btnN.textContent='Envoyer →';
+    else if(si===0) btnN.textContent='Commencer';
+    else btnN.textContent='Suivant →';
+  }
   const pct = si===0 ? 0 : (si/(S.length-1)*100);
   document.getElementById('pf').style.width=pct+'%';
   // Step counter
-  const labels=['','Localisation','Type de bien','Ville','Chambres','Budget','Date','Durée','Quartiers','Critères','Coordonnées'];
+  const labels=['','Localisation','Type de bien','Ville','Chambres','Budget','Date','Durée','Quartiers','Critères','Coordonnées','Prise de contact'];
   if(si===0){
     document.getElementById('progLabel').textContent='Démarrer';
     document.getElementById('progCounter').textContent='';
@@ -1373,6 +1404,12 @@ function closeBudgetWarn(){
 function prev(){ if(si===0)return; showStep(si-1); }
 
 // ── CALENDLY ─────────────────────────────────────────────────
+function bookAndSubmit(){
+  submittedName=document.getElementById('nom')?.value?.trim()||'';
+  openCalendly();
+  setTimeout(submit,150);
+}
+
 function openCalendly(){
   const url='https://calendly.com/timthai2024/appel-projet-thailande-immobilier'
     +(submittedName?'?name='+encodeURIComponent(submittedName):'');
