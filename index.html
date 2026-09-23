@@ -1287,7 +1287,7 @@ function onCountryChange(){
 function getFullTel(){
   const raw=(document.getElementById('countryCode')?.value||'+33').split('-')[0];
   const dialCode=raw.replace('+','');
-  return dialCode + document.getElementById('tel').value.trim();
+  return '+' + dialCode + document.getElementById('tel').value.trim();
 }
 
 function filterTel(el){
@@ -1444,7 +1444,7 @@ function submit(){
   const crit=getCriteres();
   if(crit) lines.push(`📝 *Critères :* ${crit}`);
   lines.push(``,`👤 *Nom :* ${document.getElementById('nom').value.trim()}`);
-  lines.push(`📱 *Tel/WA :* +${getFullTel()}`);
+  lines.push(`📱 *Tel/WA :* ${getFullTel()}`);
 
   // ── PAYLOAD COMMUN ───────────────────────────────────────
   const payload={
@@ -1495,7 +1495,7 @@ function submit(){
   const crit2=getCriteres();
   if(crit2) w3f.append('Critères', crit2);
   w3f.append('Nom', document.getElementById('nom').value.trim());
-  w3f.append('Téléphone', '+'+getFullTel());
+  w3f.append('Téléphone', getFullTel());
   fetch('https://api.web3forms.com/submit',{method:'POST',body:w3f}).catch(()=>{});
 
   submittedName=document.getElementById('nom').value.trim();
