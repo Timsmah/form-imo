@@ -25,25 +25,34 @@
     border-radius: 50%;
     margin: 0 auto 2rem;
   }
-  h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.75rem; }
-  p { color: #999; font-size: 1rem; line-height: 1.6; }
-  .tags { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin-top: 2rem; }
-  .tag { background: #1a1a1a; border: 1px solid #333; border-radius: 2rem; padding: 0.4rem 1rem; font-size: 0.85rem; color: #777; }
+  h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .sub { color: #666; font-size: 0.95rem; margin-bottom: 2rem; line-height: 1.5; }
+  .btn {
+    display: block; width: 100%;
+    padding: 1rem 1.5rem;
+    border-radius: 0.75rem;
+    font-size: 1rem; font-weight: 600;
+    text-decoration: none;
+    margin-bottom: 0.75rem;
+    transition: opacity 0.15s;
+  }
+  .btn:hover { opacity: 0.85; }
+  .btn-primary { background: #ff6b35; color: #fff; }
+  .btn-secondary { background: #1a1a1a; color: #fff; border: 1px solid #333; }
+  .flag { font-size: 2.5rem; margin-bottom: 1rem; }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="dot"></div>
-  <h1>Bientôt disponible</h1>
-  <p>Le site est en cours de mise à jour.<br>On revient vite.</p>
-  <div class="tags">
-    <span class="tag">Vivre à Bangkok</span>
-    <span class="tag">Relocalisation en Thaïlande</span>
-    <span class="tag">Vie d'expat</span>
-    <span class="tag">Visa Thaïlande</span>
-    <span class="tag">Quartiers de Bangkok</span>
-    <span class="tag">Coût de la vie</span>
-  </div>
+  <div class="flag">🇹🇭</div>
+  <h1>Tim — Vivre à Bangkok</h1>
+  <p class="sub">Français installé à Bangkok depuis 2,5 ans.<br>Quartiers, visas, coût de la vie, vie d'expat.</p>
+  <a href="https://calendly.com/timthai2024/appel-projet-thailande-immobilier" target="_blank" class="btn btn-primary">
+    📅 Réserver un appel · Consulting expatriation
+  </a>
+  <a href="https://www.tiktok.com/@tim.thld" target="_blank" class="btn btn-secondary">
+    TikTok · @tim.thld
+  </a>
 </div>
 </body>
 </html>
