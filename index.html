@@ -16,10 +16,9 @@
 html{scroll-behavior:smooth}
 body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;display:flex;justify-content:center}
 .wrap{width:100%;max-width:480px;min-height:100vh;background:var(--card);display:flex;flex-direction:column}
-.hdr{background:#fff;padding:28px 24px 20px;border-bottom:1px solid var(--border);flex-shrink:0}
-.hdr-brand{font-family:'Playfair Display',serif;font-size:36px;font-weight:900;color:var(--dark);letter-spacing:-.02em;line-height:1;margin-bottom:3px}
-.hdr-sub{font-size:9px;font-weight:700;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;margin-bottom:14px}
-.hdr-desc{font-size:13px;color:var(--muted);line-height:1.6}
+.hdr{background:#111;padding:24px 24px 20px;border-bottom:none;flex-shrink:0}
+.hdr-logo{height:64px;width:auto;display:block;margin-bottom:14px}
+.hdr-desc{font-size:13px;color:rgba(255,255,255,.5);line-height:1.6}
 .prog-wrap{background:#fff;padding:0 24px 18px;border-bottom:1px solid var(--border);flex-shrink:0}
 .prog-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
 .prog-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
@@ -117,8 +116,7 @@ textarea{min-height:110px;resize:vertical}
 <div class="wrap">
 
 <div class="hdr">
-  <div class="hdr-brand">HSC</div>
-  <div class="hdr-sub">by Poolcare</div>
+  <img src="logo-white.png" alt="HSC Real Estate" class="hdr-logo">
   <p class="hdr-desc">Remplissez ce formulaire (2 min) — notre équipe vous recontacte dans les 24h.</p>
 </div>
 <div class="prog-wrap" id="progWrap">
