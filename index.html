@@ -16,11 +16,10 @@
 html{scroll-behavior:smooth}
 body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;display:flex;justify-content:center}
 .wrap{width:100%;max-width:480px;min-height:100vh;background:var(--card);display:flex;flex-direction:column}
-.hdr{background:#fff;padding:20px 24px 16px;border-bottom:1px solid var(--border);flex-shrink:0;display:flex;align-items:center;gap:14px}
-.hdr-logo{height:48px;width:auto;display:block;flex-shrink:0}
-.hdr-right{}
-.hdr-sub{font-size:9px;font-weight:700;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin-bottom:4px}
-.hdr-desc{font-size:12px;color:var(--muted);line-height:1.5}
+.hdr{background:#fff;padding:32px 24px 24px;border-bottom:1px solid var(--border);flex-shrink:0;display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px}
+.hdr-logo{height:80px;width:auto;display:block}
+.hdr-sub{font-size:9px;font-weight:700;letter-spacing:.22em;color:var(--muted);text-transform:uppercase}
+.hdr-desc{font-size:13px;color:var(--muted);line-height:1.5;max-width:280px}
 .prog-wrap{background:#fff;padding:0 24px 18px;border-bottom:1px solid var(--border);flex-shrink:0}
 .prog-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
 .prog-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
@@ -119,10 +118,8 @@ textarea{min-height:110px;resize:vertical}
 
 <div class="hdr">
   <img src="logo.jpeg" alt="HSC Real Estate" class="hdr-logo">
-  <div class="hdr-right">
-    <div class="hdr-sub">by Poolcare</div>
-    <p class="hdr-desc">Votre projet en Thaïlande — réponse sous 24h</p>
-  </div>
+  <div class="hdr-sub">by Poolcare</div>
+  <p class="hdr-desc">Votre projet immobilier en Thaïlande — réponse sous 24h</p>
 </div>
 <div class="prog-wrap" id="progWrap">
   <div class="prog-top">
