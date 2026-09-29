@@ -281,7 +281,7 @@ textarea{min-height:110px;resize:vertical}
   <div class="qlabel">Avant-dernière étape</div>
   <div class="qtitle">Vos coordonnées</div>
   <div class="qdesc">Pour vous recontacter rapidement sur WhatsApp</div>
-  <div class="igroup"><label class="ilabel" id="nom-label">Nom et prénom *</label><input type="text" id="nom" maxlength="60" required placeholder="Thomas Dupont" oninput="refreshNav()"></div>
+  <div class="igroup"><label class="ilabel" id="nom-label">Nom et prénom *</label><input type="text" id="nom" maxlength="60" required placeholder="Thomas Dupont" oninput="filterNom(this)"></div>
   <div class="igroup"><label class="ilabel" id="tel-label">Téléphone / WhatsApp *</label>
   <div class="phone-wrap">
     <div class="phone-cc-wrap" id="phoneCCWrap">
@@ -559,6 +559,7 @@ function getCriteres(){const chips=[...document.querySelectorAll('#crit-chips .c
 function onDurMois(){const m=parseInt(document.getElementById('dur-mois').value)||0;document.getElementById('dur-err').style.display=(m>0&&m<3)?'block':'none';refreshNav();}
 function onCountryChange(){const sel=document.getElementById('countryCode');const opt=sel.options[sel.selectedIndex];document.getElementById('phoneFlag').textContent=opt.dataset.flag;document.getElementById('phoneCCLabel').textContent=sel.value.split('-')[0];}
 function getFullTel(){const raw=(document.getElementById('countryCode')?.value||'+33').split('-')[0];return '+'+raw.replace('+','')+document.getElementById('tel').value.trim();}
+function filterNom(el){el.value=el.value.replace(/[0-9]/g,'');refreshNav();}
 function filterTel(el){const pos=el.selectionStart;const prev=el.value;el.value=el.value.replace(/\D/g,'');if(el.value!==prev)el.setSelectionRange(pos-1,pos-1);refreshNav();}
 function updateCounter(){document.getElementById('criCount').textContent=document.getElementById('criteres').value.length;}
 function pickMulti(el){el.classList.toggle('sel');refreshNav();}
