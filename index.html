@@ -69,8 +69,10 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;heigh
 input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.1)}
 .slider-ends{display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:var(--muted)}
 #city-map{height:360px;border-radius:14px;overflow:hidden;margin-bottom:16px;box-shadow:0 0 0 1.5px var(--border),0 4px 20px rgba(0,0,0,.06)}
-.leaflet-tooltip.hlabel{background:transparent!important;border:none!important;box-shadow:none!important;padding:0!important;color:rgba(20,10,50,.9);font-family:'Inter',-apple-system,sans-serif;font-weight:800;font-size:11.5px;line-height:1.35;text-align:center;white-space:nowrap;text-shadow:0 0 4px #fff,0 0 8px #fff,0 0 12px rgba(255,255,255,.8);pointer-events:none!important}
+.leaflet-tooltip.hlabel{background:transparent!important;border:none!important;box-shadow:none!important;padding:0!important;color:rgba(20,10,50,.85);font-family:'Inter',-apple-system,sans-serif;font-weight:700;font-size:10px;line-height:1.3;text-align:center;white-space:nowrap;text-shadow:0 0 3px #fff,0 0 6px #fff,0 0 10px rgba(255,255,255,.9);pointer-events:none!important}
 .leaflet-tooltip.hlabel::before{display:none!important}
+.leaflet-tooltip.poi-label{background:transparent!important;border:none!important;box-shadow:none!important;padding:0!important;color:#b84800;font-family:'Inter',sans-serif;font-weight:700;font-size:8.5px;white-space:nowrap;text-shadow:0 0 3px #fff,0 0 6px #fff;pointer-events:none!important}
+.leaflet-tooltip.poi-label::before{display:none!important}
 .leaflet-control-attribution{font-size:9px!important;opacity:.6}
 .map-legend{display:flex;gap:14px;justify-content:center;margin:8px 0 12px;font-size:11px;font-weight:600;color:var(--muted)}
 .legend-item{display:flex;align-items:center;gap:5px}
@@ -442,33 +444,33 @@ function initMap(){
   hoodLayers={};zones=[];dontKnow=false;renderTags();
   mapInited=true;lastMapCity=mapCity;
   document.getElementById('city-map').style.height=mapCity==='thailand'?'480px':'360px';
-  leafletMap=L.map('city-map',{scrollWheelZoom:false,tap:true,attributionControl:true,zoomControl:true}).setView([13.755,100.557],12);
+  leafletMap=L.map('city-map',{scrollWheelZoom:false,tap:true,attributionControl:true,zoomControl:true}).setView([13.755,100.557],11);
   L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',{attribution:'© Esri',maxZoom:16}).addTo(leafletMap);
   L.geoJSON(city.geo,{
-    style:feature=>({color:feature.properties.border,weight:1.5,fillColor:feature.properties.color,fillOpacity:.28,opacity:.8}),
+    style:feature=>({color:feature.properties.border,weight:1,fillColor:feature.properties.color,fillOpacity:.18,opacity:.7}),
     onEachFeature:(feature,layer)=>{
       const h=feature.properties;
-      layer.bindTooltip(`<strong>${h.name}</strong>`,{permanent:true,direction:'center',className:'hlabel',interactive:false});
-      layer.on('mouseover',()=>{if(!zones.includes(h.id))layer.setStyle({fillOpacity:.45,weight:2});});
-      layer.on('mouseout',()=>{if(!zones.includes(h.id))layer.setStyle({fillOpacity:.22,weight:1.5});});
+      layer.bindTooltip(h.name,{permanent:true,direction:'center',className:'hlabel',interactive:false});
+      layer.on('mouseover',()=>{if(!zones.includes(h.id))layer.setStyle({fillOpacity:.38,weight:1.5});});
+      layer.on('mouseout',()=>{if(!zones.includes(h.id))layer.setStyle({fillOpacity:.18,weight:1});});
       layer.on('click',()=>toggleZone(h.id));
       hoodLayers[h.id]=layer;
     }
   }).addTo(leafletMap);
   const legend=document.getElementById('map-legend');
   if(city.transit){
-    L.polyline(BTS_SUKHUMVIT,{color:'#7DC142',weight:4,opacity:1,lineJoin:'round',lineCap:'round'}).addTo(leafletMap);
-    L.polyline(BTS_SILOM,{color:'#7DC142',weight:4,opacity:1,lineJoin:'round',lineCap:'round'}).addTo(leafletMap);
-    L.polyline(MRT_BLUE,{color:'#003082',weight:4,opacity:1,lineJoin:'round',lineCap:'round'}).addTo(leafletMap);
-    BTS_STATIONS.forEach(s=>{const lc=s.line==='mrt'?'#003082':'#7DC142';L.circleMarker(s.pos,{radius:4,fillColor:'#fff',fillOpacity:1,color:lc,weight:2,interactive:false}).addTo(leafletMap);});
+    L.polyline(BTS_SUKHUMVIT,{color:'#7DC142',weight:3,opacity:1,lineJoin:'round',lineCap:'round'}).addTo(leafletMap);
+    L.polyline(BTS_SILOM,{color:'#7DC142',weight:3,opacity:1,lineJoin:'round',lineCap:'round'}).addTo(leafletMap);
+    L.polyline(MRT_BLUE,{color:'#003082',weight:3,opacity:1,lineJoin:'round',lineCap:'round'}).addTo(leafletMap);
+    BTS_STATIONS.forEach(s=>{const lc=s.line==='mrt'?'#003082':'#7DC142';L.circleMarker(s.pos,{radius:3,fillColor:'#fff',fillOpacity:1,color:lc,weight:1.5,interactive:false}).addTo(leafletMap);});
     POI_BKK.forEach(p=>{
-      const icon=L.divIcon({className:'',html:`<div style="background:#111;color:#fff;font-size:9px;font-weight:700;padding:2px 5px;border-radius:4px;white-space:nowrap;font-family:Inter,sans-serif">${p.name}</div>`,iconAnchor:[0,0]});
-      L.marker(p.pos,{icon,interactive:false}).addTo(leafletMap);
+      L.circleMarker(p.pos,{radius:4,fillColor:'#E05C00',fillOpacity:1,color:'#fff',weight:1.5,interactive:false}).addTo(leafletMap);
+      L.tooltip({permanent:true,direction:'right',className:'poi-label',offset:[6,0]}).setContent(p.name).setLatLng(p.pos).addTo(leafletMap);
     });
     legend.style.display='';
   }else{legend.style.display='none';}
   const allCoords=city.geo.features.flatMap(f=>f.geometry.coordinates[0].map(c=>[c[1],c[0]]));
-  leafletMap.fitBounds(allCoords,{padding:[20,20]});
+  leafletMap.fitBounds(allCoords,{padding:[30,30]});
 }
 
 function toggleZone(id){
