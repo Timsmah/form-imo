@@ -443,7 +443,7 @@ function initMap(){
   mapInited=true;lastMapCity=mapCity;
   document.getElementById('city-map').style.height=mapCity==='thailand'?'480px':'360px';
   leafletMap=L.map('city-map',{scrollWheelZoom:false,tap:true,attributionControl:true,zoomControl:true}).setView([13.755,100.557],12);
-  L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png',{attribution:'© Stadia Maps © OSM',maxZoom:20}).addTo(leafletMap);
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',{attribution:'© Esri',maxZoom:16}).addTo(leafletMap);
   L.geoJSON(city.geo,{
     style:feature=>({color:feature.properties.border,weight:1.5,fillColor:feature.properties.color,fillOpacity:.28,opacity:.8}),
     onEachFeature:(feature,layer)=>{
