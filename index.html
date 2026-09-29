@@ -482,7 +482,7 @@ function initMap(){
     BTS_STATIONS.forEach(s=>{const lc=s.line==='mrt'?'#003082':'#7DC142';L.circleMarker(s.pos,{radius:3,fillColor:'#fff',fillOpacity:1,color:lc,weight:1.5,interactive:false}).addTo(leafletMap);});
     POI_BKK.forEach(p=>{
       const pm=L.circleMarker(p.pos,{radius:4,fillColor:'#E05C00',fillOpacity:1,color:'#fff',weight:1.5,interactive:true}).addTo(leafletMap);
-      pm.bindTooltip(p.name,{permanent:false,direction:'top',className:'poi-label',offset:[0,-4]});
+      pm.bindTooltip(p.name,{permanent:true,direction:'top',className:'poi-label',offset:[0,-6]});
     });
     legend.style.display='';
   }else{legend.style.display='none';}
