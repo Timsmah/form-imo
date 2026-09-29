@@ -16,7 +16,9 @@
 html{scroll-behavior:smooth}
 body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;display:flex;justify-content:center}
 .wrap{width:100%;max-width:480px;min-height:100vh;background:var(--card);display:flex;flex-direction:column}
-.hdr{background:#F7F1E8;padding:40px 24px 32px;border-bottom:1.5px solid var(--border);flex-shrink:0;display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px}
+.hdr{position:relative;background:#F7F1E8;padding:40px 24px 32px;border-bottom:1.5px solid var(--border);flex-shrink:0;display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px}
+.lang-btn{position:absolute;top:14px;right:14px;background:rgba(155,112,69,.12);border:1.5px solid rgba(155,112,69,.3);color:var(--dark);font-size:11px;font-weight:800;letter-spacing:.08em;padding:5px 12px;border-radius:20px;cursor:pointer;transition:all .18s;font-family:inherit}
+.lang-btn:hover{background:var(--dark);color:#FDF8F2;border-color:var(--dark)}
 .hdr-logo{height:110px;width:auto;display:block}
 .hdr-sub{font-size:9px;font-weight:700;letter-spacing:.22em;color:var(--muted);text-transform:uppercase}
 .hdr-desc{font-size:13px;color:var(--muted);line-height:1.5;max-width:300px}
@@ -119,9 +121,10 @@ textarea{min-height:110px;resize:vertical}
 <div class="wrap">
 
 <div class="hdr">
+  <button class="lang-btn" id="lang-toggle" onclick="toggleLang()">EN</button>
   <img src="logo.png" alt="HSC Real Estate" class="hdr-logo">
-  <div class="hdr-sub">by Poolcare</div>
-  <p class="hdr-desc">Votre projet immobilier en Thaïlande — géré par une équipe thaï locale · réponse sous 24h</p>
+  <div class="hdr-sub" id="hdrSub">by Poolcare</div>
+  <p class="hdr-desc" id="hdrDesc">Votre projet immobilier en Thaïlande — géré par une équipe thaï locale · réponse sous 24h</p>
 </div>
 <div class="prog-wrap" id="progWrap">
   <div class="prog-top">
@@ -151,8 +154,8 @@ textarea{min-height:110px;resize:vertical}
   <div class="qlabel">Question 1 / <span class="tot"></span></div>
   <div class="qtitle">Où êtes-vous actuellement ?</div>
   <div class="grid" style="margin-top:4px">
-    <div class="card" onclick="pick1(this,'loc')"><div class="chk"></div><span class="card-icon">✈️</span><div><div class="card-txt">À l'étranger</div><div class="card-sub">Je prépare mon projet depuis chez moi</div></div></div>
-    <div class="card" onclick="pick1(this,'loc')"><div class="chk"></div><span class="card-icon">🌴</span><div><div class="card-txt">En Thaïlande</div><div class="card-sub">Je suis déjà sur place</div></div></div>
+    <div class="card" onclick="pick1(this,'loc')"><div class="chk"></div><span class="card-icon">✈️</span><div><div class="card-txt" data-fr="À l'étranger">À l'étranger</div><div class="card-sub" id="loc1sub">Je prépare mon projet depuis chez moi</div></div></div>
+    <div class="card" onclick="pick1(this,'loc')"><div class="chk"></div><span class="card-icon">🌴</span><div><div class="card-txt" data-fr="En Thaïlande">En Thaïlande</div><div class="card-sub" id="loc2sub">Je suis déjà sur place</div></div></div>
   </div>
 </div>
 
@@ -160,9 +163,9 @@ textarea{min-height:110px;resize:vertical}
   <div class="qlabel">Question 2 / <span class="tot"></span></div>
   <div class="qtitle">Quel type de bien ?</div>
   <div class="grid" style="margin-top:4px">
-    <div class="card" onclick="pick1(this,'type')"><div class="chk"></div><span class="card-icon">🏢</span><div><div class="card-txt">Condo / Appartement</div></div></div>
-    <div class="card" onclick="pick1(this,'type')"><div class="chk"></div><span class="card-icon">🏡</span><div><div class="card-txt">Maison / Villa</div></div></div>
-    <div class="card" onclick="pick1(this,'type')"><div class="chk"></div><span class="card-icon">🏪</span><div><div class="card-txt">Bien commercial / Autre</div></div></div>
+    <div class="card" onclick="pick1(this,'type')"><div class="chk"></div><span class="card-icon">🏢</span><div><div class="card-txt" data-fr="Condo / Appartement">Condo / Appartement</div></div></div>
+    <div class="card" onclick="pick1(this,'type')"><div class="chk"></div><span class="card-icon">🏡</span><div><div class="card-txt" data-fr="Maison / Villa">Maison / Villa</div></div></div>
+    <div class="card" onclick="pick1(this,'type')"><div class="chk"></div><span class="card-icon">🏪</span><div><div class="card-txt" data-fr="Bien commercial / Autre">Bien commercial / Autre</div></div></div>
   </div>
 </div>
 
@@ -173,8 +176,8 @@ textarea{min-height:110px;resize:vertical}
     <div class="card" onclick="pick1(this,'ville','bangkok')"><div class="chk"></div><span class="card-icon">🏙️</span><div><div class="card-txt">Bangkok</div></div></div>
     <div class="card" onclick="pick1(this,'ville','pattaya')"><div class="chk"></div><span class="card-icon">🏖️</span><div><div class="card-txt">Pattaya</div></div></div>
     <div class="card" onclick="pick1(this,'ville','phuket')"><div class="chk"></div><span class="card-icon">🌊</span><div><div class="card-txt">Phuket</div></div></div>
-    <div class="card" onclick="pick1(this,'ville','thailand')"><div class="chk"></div><span class="card-icon">🗺️</span><div><div class="card-txt">Autre</div></div></div>
-    <div class="card" onclick="pick1(this,'ville',null)"><div class="chk"></div><span class="card-icon">🤷</span><div><div class="card-txt">Pas encore décidé</div></div></div>
+    <div class="card" onclick="pick1(this,'ville','thailand')"><div class="chk"></div><span class="card-icon">🗺️</span><div><div class="card-txt" data-fr="Autre">Autre</div></div></div>
+    <div class="card" onclick="pick1(this,'ville',null)"><div class="chk"></div><span class="card-icon">🤷</span><div><div class="card-txt" data-fr="Pas encore décidé">Pas encore décidé</div></div></div>
   </div>
 </div>
 
@@ -215,13 +218,13 @@ textarea{min-height:110px;resize:vertical}
   <div class="qlabel">Question 7 / <span class="tot"></span></div>
   <div class="qtitle">Durée du contrat ?</div>
   <div class="grid" style="margin-top:4px">
-    <div class="card" onclick="pickDur(this,'1 an')"><div class="chk"></div><div class="card-txt">1 an</div></div>
-    <div class="card" onclick="pickDur(this,'6 mois')"><div class="chk"></div><div class="card-txt">6 mois</div></div>
-    <div class="card" onclick="pickDur(this,'3 mois')"><div class="chk"></div><div class="card-txt">3 mois</div></div>
-    <div class="card" id="dur-autre-card" onclick="pickDurAutre(this)"><div class="chk"></div><div class="card-txt">Autre</div></div>
+    <div class="card" onclick="pickDur(this,'1 an')"><div class="chk"></div><div class="card-txt" data-fr="1 an">1 an</div></div>
+    <div class="card" onclick="pickDur(this,'6 mois')"><div class="chk"></div><div class="card-txt" data-fr="6 mois">6 mois</div></div>
+    <div class="card" onclick="pickDur(this,'3 mois')"><div class="chk"></div><div class="card-txt" data-fr="3 mois">3 mois</div></div>
+    <div class="card" id="dur-autre-card" onclick="pickDurAutre(this)"><div class="chk"></div><div class="card-txt" data-fr="Autre">Autre</div></div>
   </div>
   <div id="dur-autre-panel" style="display:none;margin-top:16px;padding:16px;background:var(--bg);border-radius:var(--r);border:1px solid var(--border)">
-    <label style="font-size:14px;font-weight:600;color:var(--txt);display:block;margin-bottom:8px">Combien de mois ?</label>
+    <label id="dur-autre-label" style="font-size:14px;font-weight:600;color:var(--txt);display:block;margin-bottom:8px">Combien de mois ?</label>
     <select id="dur-mois" onchange="onDurMois()" style="width:100%;padding:12px 14px;border-radius:8px;border:1px solid var(--border);font-size:15px;background:#fff;color:var(--txt);appearance:auto">
       <option value="">— Choisir —</option>
     </select>
@@ -278,8 +281,8 @@ textarea{min-height:110px;resize:vertical}
   <div class="qlabel">Avant-dernière étape</div>
   <div class="qtitle">Vos coordonnées</div>
   <div class="qdesc">Pour vous recontacter rapidement sur WhatsApp</div>
-  <div class="igroup"><label class="ilabel">Nom et prénom *</label><input type="text" id="nom" maxlength="60" required placeholder="Thomas Dupont" oninput="refreshNav()"></div>
-  <div class="igroup"><label class="ilabel">Téléphone / WhatsApp *</label>
+  <div class="igroup"><label class="ilabel" id="nom-label">Nom et prénom *</label><input type="text" id="nom" maxlength="60" required placeholder="Thomas Dupont" oninput="refreshNav()"></div>
+  <div class="igroup"><label class="ilabel" id="tel-label">Téléphone / WhatsApp *</label>
   <div class="phone-wrap">
     <div class="phone-cc-wrap" id="phoneCCWrap">
       <span class="phone-flag" id="phoneFlag">🇫🇷</span>
@@ -321,7 +324,7 @@ textarea{min-height:110px;resize:vertical}
     <div class="card" id="visa-non" onclick="pickVisa('non')"><div class="chk"></div><div class="card-txt">Non</div></div>
   </div>
   <div id="visa-aide-panel" style="display:none;margin-top:24px">
-    <div style="font-size:16px;font-weight:700;color:var(--dark);margin-bottom:12px;line-height:1.35;font-family:'DM Serif Display',serif">Pensez-vous avoir besoin d'aide pour le visa ?</div>
+    <div id="visa-aide-q" style="font-size:16px;font-weight:700;color:var(--dark);margin-bottom:12px;line-height:1.35;font-family:'DM Serif Display',serif">Pensez-vous avoir besoin d'aide pour le visa ?</div>
     <div class="grid c2">
       <div class="card" id="aide-oui" onclick="pickAideVisa('oui')"><div class="chk"></div><div class="card-txt">Oui</div></div>
       <div class="card" id="aide-non" onclick="pickAideVisa('non')"><div class="chk"></div><div class="card-txt">Non</div></div>
@@ -332,7 +335,7 @@ textarea{min-height:110px;resize:vertical}
 <div id="modal-budget-warn" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.55);align-items:center;justify-content:center;padding:24px">
   <div style="background:#fff;border-radius:16px;padding:28px 24px;max-width:360px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.2);text-align:center">
     <div style="font-size:44px;margin-bottom:12px">⚠️</div>
-    <div style="font-size:17px;font-weight:800;color:#92400E;margin-bottom:10px;line-height:1.3">Attention</div>
+    <div id="modal-title" style="font-size:17px;font-weight:800;color:#92400E;margin-bottom:10px;line-height:1.3">Attention</div>
     <p style="font-size:14px;color:#374151;line-height:1.6;margin-bottom:24px">Il n'existe aucun logement disponible en dessous de <strong>800&nbsp;€ / mois</strong> pour un contrat de <strong>3 mois</strong> à Bangkok.</p>
     <button onclick="closeBudgetWarn()" style="width:100%;padding:14px;background:#111;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:800;cursor:pointer">Je comprends</button>
   </div>
@@ -445,6 +448,7 @@ function thbToSlider(thb,conf){return thb<=conf.mid?((thb-conf.min)/(conf.mid-co
 function fmtThb(n){return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,' ');}
 function fmtEur(thb){const eur=Math.round(thb/37),step=eur<5000?50:eur<30000?200:eur<100000?1000:5000;return '≈ '+Math.round(eur/step)*step+' €';}
 
+let lang='fr';
 let type=null,mapCity=null,bVal=40000,zones=[],dontKnow=false,si=0;
 let leafletMap=null,hoodLayers={},mapInited=false,submittedName='';
 let visaStatus=null,visaAide=null;
@@ -510,7 +514,7 @@ function removeZone(id){zones=zones.filter(z=>z!==id);const h=getCurrentHoods().
 function toggleDK(){
   dontKnow=!dontKnow;
   document.getElementById('c-dk').classList.toggle('sel',dontKnow);
-  if(dontKnow){zones.forEach(id=>{const h=getCurrentHoods().find(x=>x.id===id);if(h&&hoodLayers[id])hoodLayers[id].setStyle({fillOpacity:.48,weight:1.5,color:h.border});});zones=[];renderTags();document.getElementById('nosel').style.display='none';const d=document.createElement('div');d.className='tag';d.id='dk-tag';d.style.cssText='background:#E5E7EB;border-color:#9CA3AF;color:#374151';d.textContent='Je ne sais pas encore';document.getElementById('tags').appendChild(d);}
+  if(dontKnow){zones.forEach(id=>{const h=getCurrentHoods().find(x=>x.id===id);if(h&&hoodLayers[id])hoodLayers[id].setStyle({fillOpacity:.48,weight:1.5,color:h.border});});zones=[];renderTags();document.getElementById('nosel').style.display='none';const d=document.createElement('div');d.className='tag';d.id='dk-tag';d.style.cssText='background:#E5E7EB;border-color:#9CA3AF;color:#374151';d.textContent=I18N[lang].dkTag;document.getElementById('tags').appendChild(d);}
   else{document.getElementById('dk-tag')?.remove();renderTags();}
 }
 
@@ -519,8 +523,8 @@ function initBudget(){
   const sl=document.getElementById('bslider');sl.min=0;sl.max=1000;sl.step=1;
   if(bVal<conf.min||bVal>conf.max)bVal=conf.def;
   sl.value=Math.round(thbToSlider(bVal,conf)*1000);
-  document.getElementById('bq').textContent=type==='louer'?'Budget mensuel ?':"Budget total d'achat ?";
-  document.getElementById('bunit').textContent=type==='louer'?'/mois':'';
+  const bt=I18N[lang];document.getElementById('bq').textContent=type==='louer'?bt.s5title_louer:bt.s5title_achat;
+  document.getElementById('bunit').textContent=type==='louer'?bt.pmois:'';
   document.getElementById('bmin').textContent='฿'+fmtThb(conf.min);
   document.getElementById('bmax').textContent='฿'+fmtThb(conf.max)+'+';
   renderBudget();
@@ -582,11 +586,11 @@ function refreshNav(){
   btnP.disabled=si===0;
   btnN.disabled=!valid(sid);
   if(S[si]===11){btnN.style.display='none';}
-  else{btnN.style.display='';if(si===S.length-1)btnN.textContent='Envoyer →';else if(si===0)btnN.textContent='Commencer';else btnN.textContent='Suivant →';}
+  else{const t=I18N[lang];btnN.style.display='';if(si===S.length-1)btnN.textContent=t.btnEnvoyer;else if(si===0)btnN.textContent=t.btnCommencer;else btnN.textContent=t.btnSuivant;}
   const pct=si===0?0:(si/(S.length-1)*100);
   document.getElementById('pf').style.width=pct+'%';
-  const labels=['','Localisation','Type de bien','Ville','Chambres','Budget','Date','Durée','Quartiers','Critères','Coordonnées','Contact','Visa'];
-  if(si===0){document.getElementById('progLabel').textContent='Démarrer';document.getElementById('progCounter').textContent='';}
+  const labels=I18N[lang].progLabels;
+  if(si===0){document.getElementById('progLabel').textContent=I18N[lang].progStart;document.getElementById('progCounter').textContent='';}
   else{document.getElementById('progLabel').textContent=labels[S[si]]||'';document.getElementById('progCounter').textContent=`${si} / ${S.length-1}`;}
   updateLabels();
 }
@@ -616,7 +620,7 @@ function bookAndSubmit(){submittedName=document.getElementById('nom')?.value?.tr
 function openCalendly(){const url='https://calendly.com/timthai2024/appel-relocalisation-thailande'+(submittedName?'?name='+encodeURIComponent(submittedName):'');if(window.Calendly)Calendly.initPopupWidget({url});else window.open(url,'_blank');}
 
 function submit(){
-  const q=s=>{if(s===7&&document.getElementById('dur-autre-card')?.classList.contains('sel')){const m=document.getElementById('dur-mois').value;return m?m+' mois':'Autre';}return document.querySelector(`#s${s} .card.sel .card-txt`)?.textContent?.trim()||'';};
+  const q=s=>{if(s===7&&document.getElementById('dur-autre-card')?.classList.contains('sel')){const m=document.getElementById('dur-mois').value;return m?m+' mois':'Autre';}const el=document.querySelector(`#s${s} .card.sel .card-txt`);return(el?.dataset?.fr||el?.textContent?.trim())||'';};
   const quartiers=dontKnow?'Je ne sais pas encore':(zones.length?getZoneNames().join(', '):'Non précisé');
   const visaLabel=visaStatus==='oui'?'Oui':'Non';
   const aideVisaLabel=visaStatus==='non'?(visaAide==='oui'?'Oui':'Non'):'';
@@ -647,6 +651,211 @@ function submit(){
   document.getElementById('sw').innerHTML='';document.getElementById('nav').style.display='none';document.getElementById('pf').style.width='100%';
   suc.classList.add('active');suc.style.display='flex';document.getElementById('sw').appendChild(suc);
 }
+
+const I18N={
+  fr:{
+    hdrSub:'by Poolcare',
+    hdrDesc:'Votre projet immobilier en Thaïlande — géré par une équipe thaï locale · réponse sous 24h',
+    progStart:'Démarrer',
+    progLabels:['','Localisation','Type de bien','Ville','Chambres','Budget','Date','Durée','Quartiers','Critères','Coordonnées','Contact','Visa'],
+    s0label:'Pour commencer',s0title:'Quel est votre projet ?',s0desc:'Sélectionnez ce qui correspond le mieux à votre situation',
+    louerTxt:'Louer',louerSub:'Location longue ou courte durée',
+    acheterTxt:'Acheter',acheterSub:'Investissement ou résidence principale',
+    s1title:'Où êtes-vous actuellement ?',
+    loc1txt:"À l'étranger",loc1sub:'Je prépare mon projet depuis chez moi',
+    loc2txt:'En Thaïlande',loc2sub:'Je suis déjà sur place',
+    s2title:'Quel type de bien ?',
+    bien1:'Condo / Appartement',bien2:'Maison / Villa',bien3:'Bien commercial / Autre',
+    s3title:'Dans quelle ville ?',
+    autre:'Autre',pasDecide:'Pas encore décidé',
+    s4title:'Nombre de chambres ?',
+    chambre:'chambre',chambres:'chambres',chambresPlus:'chambres ou plus',piece:'1 pièce',
+    s5title_louer:'Budget mensuel ?',s5title_achat:"Budget total d'achat ?",
+    s5desc:'Glissez pour ajuster votre fourchette',pmois:'/mois',
+    s6title:'À partir de quand ?',s6desc:"Date souhaitée d'entrée dans le logement",
+    s7title:'Durée du contrat ?',
+    dur1an:'1 an',dur6mois:'6 mois',dur3mois:'3 mois',durAutre:'Autre',
+    durCombien:'Combien de mois ?',durChoisir:'— Choisir —',
+    durErr:'Nous ne travaillons pas avec les contrats de moins de 3 mois.',
+    s8title:'Quartiers qui vous intéressent ?',s8desc:'Touchez les zones sur la carte pour les sélectionner',
+    nosel:'Aucun quartier sélectionné',
+    dkTxt:"Je ne sais pas encore, j'ai besoin de conseils",dkTag:'Je ne sais pas encore',
+    optional:'Optionnel',
+    s9title:'Autres critères ?',s9desc:'Sélectionnez tout ce qui compte pour vous',
+    autrePrec:'Autre précision',criPlaceholder:'Ex : budget flexible si le bien est exceptionnel…',
+    chips:{'Piscine':'🏊 Piscine','Salle de sport':'🏋️ Salle de sport','Rooftop / terrasse':'🌿 Rooftop','Chien accepté':'🐕 Chien accepté','Chat accepté':'🐈 Chat accepté','Accès BTS direct':'🚇 Accès BTS direct','Parking moto / scooter':'🛵 Parking moto','Vue dégagée':'🪟 Vue dégagée','Meublé':'🛋️ Meublé','Proche école internationale':'🏫 École internationale','Proche hôpital':'🏥 Proche hôpital','Proche mall':'🏬 Proche mall'},
+    s10label:'Avant-dernière étape',s10title:'Vos coordonnées',s10desc:'Pour vous recontacter rapidement sur WhatsApp',
+    nomLabel:'Nom et prénom *',telLabel:'Téléphone / WhatsApp *',
+    telErr:'Merci de renseigner votre numéro',
+    s11label:'Dernière étape',s11title:'Comment on échange ?',s11desc:'Votre dossier est prêt — choisissez ce qui vous convient',
+    calCt:'Réserver un appel',calCs:'15 min · Gratuit · Sans engagement<br>Notre équipe vous rappelle à l\'heure choisie',
+    calSkip:'Non merci, j\'attends votre retour →',
+    s12label:'Dernière question',s12title:'Avez-vous un visa ?',
+    oui:'Oui',non:'Non',
+    aideVisa:"Pensez-vous avoir besoin d'aide pour le visa ?",
+    modalTitle:'Attention',
+    modalText:'Il n\'existe aucun logement disponible en dessous de <strong>800&nbsp;€ / mois</strong> pour un contrat de <strong>3 mois</strong> à Bangkok.',
+    modalOk:'Je comprends',
+    sucTitle:"C'est envoyé !",sucP1:'Merci d\'avoir rempli le formulaire, notre équipe vous recontacte dans les 24h.',sucP2:'— HSC by Poolcare 🇹🇭',
+    btnCommencer:'Commencer',btnSuivant:'Suivant →',btnEnvoyer:'Envoyer →'
+  },
+  en:{
+    hdrSub:'by Poolcare',
+    hdrDesc:'Your real estate project in Thailand — managed by a local Thai team · response within 24h',
+    progStart:'Start',
+    progLabels:['','Location','Property type','City','Bedrooms','Budget','Date','Duration','Neighborhoods','Criteria','Contact','Booking','Visa'],
+    s0label:'To get started',s0title:'What is your project?',s0desc:'Select what best matches your situation',
+    louerTxt:'Rent',louerSub:'Long or short-term rental',
+    acheterTxt:'Buy',acheterSub:'Investment or primary residence',
+    s1title:'Where are you currently?',
+    loc1txt:'Abroad',loc1sub:'Planning my project from home',
+    loc2txt:'In Thailand',loc2sub:"I'm already on-site",
+    s2title:'What type of property?',
+    bien1:'Condo / Apartment',bien2:'House / Villa',bien3:'Commercial / Other',
+    s3title:'Which city?',
+    autre:'Other',pasDecide:'Not decided yet',
+    s4title:'Number of bedrooms?',
+    chambre:'bedroom',chambres:'bedrooms',chambresPlus:'bedrooms or more',piece:'1 room',
+    s5title_louer:'Monthly budget?',s5title_achat:'Total purchase budget?',
+    s5desc:'Slide to adjust your range',pmois:'/mo',
+    s6title:'Available from when?',s6desc:'Desired move-in date',
+    s7title:'Contract duration?',
+    dur1an:'1 year',dur6mois:'6 months',dur3mois:'3 months',durAutre:'Other',
+    durCombien:'How many months?',durChoisir:'— Choose —',
+    durErr:"We don't work with contracts shorter than 3 months.",
+    s8title:'Neighborhoods you\'re interested in?',s8desc:'Tap areas on the map to select them',
+    nosel:'No neighborhood selected',
+    dkTxt:"I don't know yet, I need advice",dkTag:"I don't know yet",
+    optional:'Optional',
+    s9title:'Other criteria?',s9desc:'Select everything that matters to you',
+    autrePrec:'Other notes',criPlaceholder:'E.g.: flexible budget for an exceptional property…',
+    chips:{'Piscine':'🏊 Pool','Salle de sport':'🏋️ Gym','Rooftop / terrasse':'🌿 Rooftop','Chien accepté':'🐕 Dogs allowed','Chat accepté':'🐈 Cats allowed','Accès BTS direct':'🚇 BTS access','Parking moto / scooter':'🛵 Moto parking','Vue dégagée':'🪟 Open view','Meublé':'🛋️ Furnished','Proche école internationale':"🏫 Int'l school",'Proche hôpital':'🏥 Near hospital','Proche mall':'🏬 Near mall'},
+    s10label:'Almost done',s10title:'Your contact details',s10desc:'To reach you quickly on WhatsApp',
+    nomLabel:'Full name *',telLabel:'Phone / WhatsApp *',
+    telErr:'Please enter your phone number',
+    s11label:'Last step',s11title:'How shall we connect?',s11desc:'Your file is ready — choose what works for you',
+    calCt:'Book a call',calCs:'15 min · Free · No commitment<br>Our team calls you at the chosen time',
+    calSkip:"No thanks, I'll wait for your reply →",
+    s12label:'Last question',s12title:'Do you have a visa?',
+    oui:'Yes',non:'No',
+    aideVisa:"Do you think you'll need help with the visa?",
+    modalTitle:'Warning',
+    modalText:'There is no available property below <strong>€800 / month</strong> for a <strong>3-month</strong> contract in Bangkok.',
+    modalOk:'I understand',
+    sucTitle:'Submitted!',sucP1:'Thank you for filling out the form, our team will contact you within 24h.',sucP2:'— HSC by Poolcare 🇹🇭',
+    btnCommencer:'Start',btnSuivant:'Next →',btnEnvoyer:'Submit →'
+  }
+};
+
+function applyLang(l){
+  lang=l;
+  const t=I18N[l];
+  document.documentElement.lang=l;
+  document.getElementById('lang-toggle').textContent=l==='fr'?'EN':'FR';
+  // header
+  document.getElementById('hdrSub').textContent=t.hdrSub;
+  document.getElementById('hdrDesc').textContent=t.hdrDesc;
+  // step 0
+  document.querySelector('#s0 .qlabel').textContent=t.s0label;
+  document.querySelector('#s0 .qtitle').textContent=t.s0title;
+  document.querySelector('#s0 .qdesc').textContent=t.s0desc;
+  document.querySelector('#bc-louer .bt').textContent=t.louerTxt;
+  document.querySelector('#bc-louer .bs').textContent=t.louerSub;
+  document.querySelector('#bc-acheter .bt').textContent=t.acheterTxt;
+  document.querySelector('#bc-acheter .bs').textContent=t.acheterSub;
+  // step 1
+  document.querySelector('#s1 .qtitle').textContent=t.s1title;
+  const s1c=document.querySelectorAll('#s1 .card');
+  s1c[0].querySelector('.card-txt').textContent=t.loc1txt;
+  document.getElementById('loc1sub').textContent=t.loc1sub;
+  s1c[1].querySelector('.card-txt').textContent=t.loc2txt;
+  document.getElementById('loc2sub').textContent=t.loc2sub;
+  // step 2
+  document.querySelector('#s2 .qtitle').textContent=t.s2title;
+  const s2c=document.querySelectorAll('#s2 .card');
+  s2c[0].querySelector('.card-txt').textContent=t.bien1;
+  s2c[1].querySelector('.card-txt').textContent=t.bien2;
+  s2c[2].querySelector('.card-txt').textContent=t.bien3;
+  // step 3
+  document.querySelector('#s3 .qtitle').textContent=t.s3title;
+  const s3c=document.querySelectorAll('#s3 .card');
+  s3c[3].querySelector('.card-txt').textContent=t.autre;
+  s3c[4].querySelector('.card-txt').textContent=t.pasDecide;
+  // step 4
+  document.querySelector('#s4 .qtitle').textContent=t.s4title;
+  const s4subs=document.querySelectorAll('#s4 .card-sub');
+  if(s4subs[0])s4subs[0].textContent=t.piece;
+  if(s4subs[1])s4subs[1].textContent=t.chambre;
+  if(s4subs[2])s4subs[2].textContent=t.chambres;
+  if(s4subs[3])s4subs[3].textContent=t.chambres;
+  if(s4subs[4])s4subs[4].textContent=t.chambresPlus;
+  // step 5
+  document.querySelector('#s5 .qdesc').textContent=t.s5desc;
+  document.getElementById('bq').textContent=type==='louer'?t.s5title_louer:type==='acheter'?t.s5title_achat:t.s5title_louer;
+  document.getElementById('bunit').textContent=type==='louer'?t.pmois:'';
+  // step 6
+  document.querySelector('#s6 .qtitle').textContent=t.s6title;
+  document.querySelector('#s6 .qdesc').textContent=t.s6desc;
+  // step 7
+  document.querySelector('#s7 .qtitle').textContent=t.s7title;
+  const s7c=document.querySelectorAll('#s7 > .grid > .card');
+  if(s7c[0])s7c[0].querySelector('.card-txt').textContent=t.dur1an;
+  if(s7c[1])s7c[1].querySelector('.card-txt').textContent=t.dur6mois;
+  if(s7c[2])s7c[2].querySelector('.card-txt').textContent=t.dur3mois;
+  if(s7c[3])s7c[3].querySelector('.card-txt').textContent=t.durAutre;
+  const dlabel=document.getElementById('dur-autre-label');if(dlabel)dlabel.textContent=t.durCombien;
+  const dchoisir=document.querySelector('#dur-mois option[value=""]');if(dchoisir)dchoisir.textContent=t.durChoisir;
+  document.getElementById('dur-err').textContent=t.durErr;
+  // step 8
+  document.querySelector('#s8 .qtitle').textContent=t.s8title;
+  document.querySelector('#s8 .qdesc').textContent=t.s8desc;
+  document.getElementById('nosel').textContent=t.nosel;
+  document.querySelector('#c-dk .card-txt').textContent=t.dkTxt;
+  const dktag=document.getElementById('dk-tag');if(dktag)dktag.textContent=t.dkTag;
+  document.querySelectorAll('.opt-badge').forEach(el=>el.textContent=t.optional);
+  // step 9
+  document.querySelector('#s9 .qtitle').textContent=t.s9title;
+  document.querySelector('#s9 .qdesc').textContent=t.s9desc;
+  document.querySelector('#s9 label').textContent=t.autrePrec;
+  document.getElementById('criteres').placeholder=t.criPlaceholder;
+  document.querySelectorAll('#crit-chips .chip').forEach(el=>{const v=el.dataset.val;if(t.chips[v])el.textContent=t.chips[v];});
+  // step 10
+  document.querySelector('#s10 .qlabel').textContent=t.s10label;
+  document.querySelector('#s10 .qtitle').textContent=t.s10title;
+  document.querySelector('#s10 .qdesc').textContent=t.s10desc;
+  document.getElementById('nom-label').textContent=t.nomLabel;
+  document.getElementById('tel-label').textContent=t.telLabel;
+  document.getElementById('tel-err').textContent=t.telErr;
+  // step 11
+  document.querySelector('#s11 .qlabel').textContent=t.s11label;
+  document.querySelector('#s11 .qtitle').textContent=t.s11title;
+  document.querySelector('#s11 .qdesc').textContent=t.s11desc;
+  document.querySelector('.cal-ct').textContent=t.calCt;
+  document.querySelector('.cal-cs').innerHTML=t.calCs;
+  document.querySelector('.cal-skip').textContent=t.calSkip;
+  // step 12
+  document.querySelector('#s12 .qlabel').textContent=t.s12label;
+  document.querySelector('#s12 .qtitle').textContent=t.s12title;
+  document.querySelector('#visa-oui .card-txt').textContent=t.oui;
+  document.querySelector('#visa-non .card-txt').textContent=t.non;
+  document.getElementById('visa-aide-q').textContent=t.aideVisa;
+  document.querySelector('#aide-oui .card-txt').textContent=t.oui;
+  document.querySelector('#aide-non .card-txt').textContent=t.non;
+  // modal
+  document.getElementById('modal-title').textContent=t.modalTitle;
+  document.querySelector('#modal-budget-warn p').innerHTML=t.modalText;
+  document.querySelector('#modal-budget-warn button').textContent=t.modalOk;
+  // success (update both original and any active clone)
+  document.querySelectorAll('.success h2').forEach(el=>el.textContent=t.sucTitle);
+  document.querySelectorAll('.success p').forEach((el,i)=>{if(i%2===0)el.textContent=t.sucP1;else el.textContent=t.sucP2;});
+  // nav
+  refreshNav();
+  try{localStorage.setItem('hsc_lang',l);}catch(e){}
+}
+
+function toggleLang(){applyLang(lang==='fr'?'en':'fr');}
+
+try{const saved=localStorage.getItem('hsc_lang');if(saved==='en')applyLang('en');}catch(e){}
 
 renderBudget();refreshNav();
 </script>
