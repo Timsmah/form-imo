@@ -16,10 +16,10 @@
 html{scroll-behavior:smooth}
 body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;display:flex;justify-content:center}
 .wrap{width:100%;max-width:480px;min-height:100vh;background:var(--card);display:flex;flex-direction:column}
-.hdr{position:relative;background:#F7F1E8;padding:40px 24px 32px;border-bottom:1.5px solid var(--border);flex-shrink:0;display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px}
-.lang-btn{position:absolute;top:14px;right:14px;background:rgba(155,112,69,.12);border:1.5px solid rgba(155,112,69,.3);color:var(--dark);font-size:11px;font-weight:800;letter-spacing:.08em;padding:5px 12px;border-radius:20px;cursor:pointer;transition:all .18s;font-family:inherit}
+.hdr{position:relative;background:#F7F1E8;padding:22px 24px 18px;border-bottom:1.5px solid var(--border);flex-shrink:0;display:flex;flex-direction:column;align-items:center;text-align:center;gap:9px}
+.lang-btn{position:absolute;top:14px;right:14px;background:rgba(155,112,69,.12);border:1.5px solid rgba(155,112,69,.3);color:var(--dark);font-size:13px;font-weight:700;letter-spacing:.04em;padding:6px 14px;border-radius:20px;cursor:pointer;transition:all .18s;font-family:inherit;line-height:1.3}
 .lang-btn:hover{background:var(--dark);color:#FDF8F2;border-color:var(--dark)}
-.hdr-logo{height:110px;width:auto;display:block}
+.hdr-logo{height:88px;width:auto;display:block}
 .hdr-sub{font-size:9px;font-weight:700;letter-spacing:.22em;color:var(--muted);text-transform:uppercase}
 .hdr-desc{font-size:13px;color:var(--muted);line-height:1.5;max-width:300px}
 .prog-wrap{background:#F7F1E8;padding:0 24px 18px;border-bottom:1.5px solid var(--border);flex-shrink:0}
@@ -121,7 +121,7 @@ textarea{min-height:110px;resize:vertical}
 <div class="wrap">
 
 <div class="hdr">
-  <button class="lang-btn" id="lang-toggle" onclick="toggleLang()">EN</button>
+  <button class="lang-btn" id="lang-toggle" onclick="toggleLang()">🇬🇧 EN</button>
   <img src="logo.png" alt="HSC Real Estate" class="hdr-logo">
   <div class="hdr-sub" id="hdrSub">by Poolcare</div>
   <p class="hdr-desc" id="hdrDesc">Votre projet immobilier en Thaïlande — géré par une équipe thaï locale · réponse sous 24h</p>
@@ -583,7 +583,7 @@ function valid(sid){
 function refreshNav(){
   const S=steps(),sid=S[si];
   const btnN=document.getElementById('btnN'),btnP=document.getElementById('btnP');
-  btnP.disabled=si===0;
+  btnP.disabled=si===0;btnP.style.display=si===0?'none':'';
   btnN.disabled=!valid(sid);
   if(S[si]===11){btnN.style.display='none';}
   else{const t=I18N[lang];btnN.style.display='';if(si===S.length-1)btnN.textContent=t.btnEnvoyer;else if(si===0)btnN.textContent=t.btnCommencer;else btnN.textContent=t.btnSuivant;}
@@ -751,7 +751,7 @@ function applyLang(l){
   lang=l;
   const t=I18N[l];
   document.documentElement.lang=l;
-  document.getElementById('lang-toggle').textContent=l==='fr'?'EN':'FR';
+  document.getElementById('lang-toggle').textContent=l==='fr'?'🇬🇧 EN':'🇫🇷 FR';
   // header
   document.getElementById('hdrSub').textContent=t.hdrSub;
   document.getElementById('hdrDesc').textContent=t.hdrDesc;
