@@ -443,9 +443,9 @@ function initMap(){
   mapInited=true;lastMapCity=mapCity;
   document.getElementById('city-map').style.height=mapCity==='thailand'?'480px':'360px';
   leafletMap=L.map('city-map',{scrollWheelZoom:false,tap:true,attributionControl:true,zoomControl:true}).setView([13.755,100.557],12);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'© <a href="https://openstreetmap.org/copyright">OSM</a> © <a href="https://carto.com">CARTO</a>',subdomains:'abcd',maxZoom:19}).addTo(leafletMap);
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',{attribution:'© Esri',maxZoom:16}).addTo(leafletMap);
   L.geoJSON(city.geo,{
-    style:feature=>({color:feature.properties.border,weight:1.5,fillColor:feature.properties.color,fillOpacity:.22,opacity:.7}),
+    style:feature=>({color:feature.properties.border,weight:1.5,fillColor:feature.properties.color,fillOpacity:.28,opacity:.8}),
     onEachFeature:(feature,layer)=>{
       const h=feature.properties;
       layer.bindTooltip(`<strong>${h.name}</strong>`,{permanent:true,direction:'center',className:'hlabel',interactive:false});
@@ -457,10 +457,10 @@ function initMap(){
   }).addTo(leafletMap);
   const legend=document.getElementById('map-legend');
   if(city.transit){
-    L.polyline(BTS_SUKHUMVIT,{color:'#009344',weight:2.5,opacity:.9,lineJoin:'round'}).addTo(leafletMap);
-    L.polyline(BTS_SILOM,{color:'#FFCD00',weight:2.5,opacity:.9,lineJoin:'round'}).addTo(leafletMap);
-    L.polyline(MRT_BLUE,{color:'#1A3FA6',weight:2.5,opacity:.9,lineJoin:'round'}).addTo(leafletMap);
-    BTS_STATIONS.forEach(s=>{const lc=s.line==='mrt'?'#1A3FA6':s.line==='silom'?'#FFCD00':'#009344';L.circleMarker(s.pos,{radius:3,fillColor:'#fff',fillOpacity:1,color:lc,weight:1.5,interactive:false}).addTo(leafletMap);});
+    L.polyline(BTS_SUKHUMVIT,{color:'#009344',weight:4,opacity:1,lineJoin:'round',lineCap:'round'}).addTo(leafletMap);
+    L.polyline(BTS_SILOM,{color:'#E8B800',weight:4,opacity:1,lineJoin:'round',lineCap:'round'}).addTo(leafletMap);
+    L.polyline(MRT_BLUE,{color:'#1A3FA6',weight:4,opacity:1,lineJoin:'round',lineCap:'round'}).addTo(leafletMap);
+    BTS_STATIONS.forEach(s=>{const lc=s.line==='mrt'?'#1A3FA6':s.line==='silom'?'#E8B800':'#009344';L.circleMarker(s.pos,{radius:4.5,fillColor:'#fff',fillOpacity:1,color:lc,weight:2,interactive:false}).addTo(leafletMap);});
     legend.style.display='';
   }else{legend.style.display='none';}
   const allCoords=city.geo.features.flatMap(f=>f.geometry.coordinates[0].map(c=>[c[1],c[0]]));
