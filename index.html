@@ -424,19 +424,19 @@ const MRT_BLUE=[[13.8145,100.5415],[13.8059,100.5737],[13.7890,100.5741],[13.777
 const BTS_STATIONS=[{pos:[13.7792,100.5448],name:'Ari',line:'bts'},{pos:[13.7627,100.5384],name:'Victory M.',line:'bts'},{pos:[13.7459,100.5339],name:'Siam',line:'bts'},{pos:[13.7443,100.5422],name:'Chit Lom',line:'bts'},{pos:[13.7369,100.5604],name:'Asok',line:'bts'},{pos:[13.7303,100.5697],name:'Phrom Phong',line:'bts'},{pos:[13.7255,100.5793],name:'Thong Lo',line:'bts'},{pos:[13.7202,100.5861],name:'Ekkamai',line:'bts'},{pos:[13.7025,100.6008],name:'On Nut',line:'bts'},{pos:[13.7290,100.5340],name:'Sala Daeng',line:'bts'},{pos:[13.7187,100.5142],name:'Saphan Taksin',line:'bts'},{pos:[13.7577,100.5668],name:'Phra Ram 9',line:'mrt'},{pos:[13.7773,100.5738],name:'Huai Khwang',line:'mrt'},{pos:[13.8059,100.5737],name:'Lat Phrao',line:'mrt'},{pos:[13.7378,100.5167],name:'Hua Lamphong',line:'mrt'},{pos:[13.7226,100.5554],name:'Si Lom',line:'mrt'},{pos:[13.7486,100.5637],name:'Sukhumvit',line:'mrt'}];
 const POI_BKK=[{pos:[13.7267,100.5095],name:'IconSiam'},{pos:[13.7217,100.5262],name:'Mahanakhon'},{pos:[13.7466,100.5393],name:'CentralWorld'},{pos:[13.7024,100.5099],name:'Asiatique'},{pos:[13.7398,100.5139],name:'Chinatown'},{pos:[13.7588,100.4971],name:'Khao San Rd'},{pos:[13.7501,100.4925],name:'Grand Palace'},{pos:[13.7319,100.5418],name:'Lumphini Park'},{pos:[13.7999,100.5524],name:'Chatuchak'}];
 const HOOD_CENTERS={
-  riverside:[13.7376,100.4992],
+  riverside:[13.7387,100.4965],
   oldtown:[13.7575,100.4959],
   silom:[13.7289,100.5339],
-  siam:[13.7457,100.5343],
-  ratchathewi:[13.7559,100.5344],
+  siam:[13.7462,100.531],
+  ratchathewi:[13.7561,100.5334],
   ari:[13.7788,100.5447],
-  asoke:[13.7364,100.5608],
+  asoke:[13.7366,100.5608],
   phrom:[13.7313,100.5683],
-  thonglor:[13.7253,100.5795],
-  ekkamai:[13.7208,100.5834],
-  onnut:[13.7039,100.5998],
-  latphrao:[13.7799,100.5740],
-  chatuchak:[13.8030,100.5537]
+  thonglor:[13.7249,100.5776],
+  ekkamai:[13.7204,100.584],
+  onnut:[13.7067,100.6005],
+  latphrao:[13.7799,100.574],
+  chatuchak:[13.803,100.5537]
 };
 
 const BUDGET_CONF={louer:{min:20000,mid:40000,max:300000,step:1000,def:40000},acheter:{min:500000,mid:5000000,max:25000000,step:100000,def:5000000}};
@@ -461,6 +461,18 @@ function initMap(){
   document.getElementById('city-map').style.height=mapCity==='thailand'?'480px':'400px';
   leafletMap=L.map('city-map',{scrollWheelZoom:false,tap:true,attributionControl:true,zoomControl:true}).setView([13.755,100.557],11);
   L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',{attribution:'© Esri',maxZoom:16}).addTo(leafletMap);
+  const legend=document.getElementById('map-legend');
+  if(city.transit){
+    L.polyline(BTS_SUKHUMVIT,{color:'#7DC142',weight:3,opacity:1,lineJoin:'round',lineCap:'round'}).addTo(leafletMap);
+    L.polyline(BTS_SILOM,{color:'#7DC142',weight:3,opacity:1,lineJoin:'round',lineCap:'round'}).addTo(leafletMap);
+    L.polyline(MRT_BLUE,{color:'#003082',weight:3,opacity:1,lineJoin:'round',lineCap:'round'}).addTo(leafletMap);
+    BTS_STATIONS.forEach(s=>{const lc=s.line==='mrt'?'#003082':'#7DC142';L.circleMarker(s.pos,{radius:3,fillColor:'#fff',fillOpacity:1,color:lc,weight:1.5,interactive:false}).addTo(leafletMap);});
+    POI_BKK.forEach(p=>{
+      const pm=L.circleMarker(p.pos,{radius:4,fillColor:'#E05C00',fillOpacity:1,color:'#fff',weight:1.5,interactive:false}).addTo(leafletMap);
+      pm.bindTooltip(p.name,{permanent:true,direction:'top',className:'poi-label',offset:[0,-6]});
+    });
+    legend.style.display='';
+  }else{legend.style.display='none';}
   city.geo.features.forEach(feature=>{
     const h=feature.properties;
     const coords=feature.geometry.coordinates[0];
@@ -474,18 +486,6 @@ function initMap(){
     m.on('click',()=>toggleZone(h.id));
     hoodLayers[h.id]=m;
   });
-  const legend=document.getElementById('map-legend');
-  if(city.transit){
-    L.polyline(BTS_SUKHUMVIT,{color:'#7DC142',weight:3,opacity:1,lineJoin:'round',lineCap:'round'}).addTo(leafletMap);
-    L.polyline(BTS_SILOM,{color:'#7DC142',weight:3,opacity:1,lineJoin:'round',lineCap:'round'}).addTo(leafletMap);
-    L.polyline(MRT_BLUE,{color:'#003082',weight:3,opacity:1,lineJoin:'round',lineCap:'round'}).addTo(leafletMap);
-    BTS_STATIONS.forEach(s=>{const lc=s.line==='mrt'?'#003082':'#7DC142';L.circleMarker(s.pos,{radius:3,fillColor:'#fff',fillOpacity:1,color:lc,weight:1.5,interactive:false}).addTo(leafletMap);});
-    POI_BKK.forEach(p=>{
-      const pm=L.circleMarker(p.pos,{radius:4,fillColor:'#E05C00',fillOpacity:1,color:'#fff',weight:1.5,interactive:true}).addTo(leafletMap);
-      pm.bindTooltip(p.name,{permanent:true,direction:'top',className:'poi-label',offset:[0,-6]});
-    });
-    legend.style.display='';
-  }else{legend.style.display='none';}
   leafletMap.setView([13.737,100.557],12);
 }
 

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Éditeur quartiers — Bangkok</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Inter,sans-serif;background:#f5f5f5;display:flex;flex-direction:column;height:100vh}
+#map{flex:1}
+#panel{background:#fff;border-top:2px solid #111;padding:12px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+#panel h3{font-size:13px;font-weight:700;color:#111;white-space:nowrap}
+#out{font-family:monospace;font-size:9px;background:#f0f0f0;padding:8px 10px;border-radius:6px;flex:1;min-width:200px;max-height:72px;overflow:auto;white-space:pre;border:1px solid #ddd}
+button{background:#111;color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
+button:active{background:#444}
+.tip{font-size:11px;color:#888;margin-top:2px}
+</style>
+</head>
+<body>
+<div id="map"></div>
+<div id="panel">
+  <div>
+    <h3>Glisse les points pour repositionner</h3>
+    <div class="tip">Lignes BTS/MRT en fond · Copier → colle à Claude</div>
+  </div>
+  <div id="out"></div>
+  <button onclick="copyCoords()">📋 Copier</button>
+</div>
+
+<script>
+const HOOD_CENTERS = {
+  riverside:[13.7376,100.4992],
+  oldtown:[13.7575,100.4959],
+  silom:[13.7289,100.5339],
+  siam:[13.7457,100.5343],
+  ratchathewi:[13.7559,100.5344],
+  ari:[13.7788,100.5447],
+  asoke:[13.7364,100.5608],
+  phrom:[13.7313,100.5683],
+  thonglor:[13.7253,100.5795],
+  ekkamai:[13.7208,100.5834],
+  onnut:[13.7039,100.5998],
+  latphrao:[13.7799,100.5740],
+  chatuchak:[13.8030,100.5537]
+};
+
+const HOOD_COLORS = {
+  riverside:'#F97316',oldtown:'#8B5CF6',silom:'#22C55E',
+  siam:'#3B82F6',ratchathewi:'#F59E0B',ari:'#06B6D4',
+  asoke:'#EF4444',phrom:'#10B981',thonglor:'#F472B6',
+  ekkamai:'#6366F1',onnut:'#84CC16',latphrao:'#EC4899',
+  chatuchak:'#F97316'
+};
+
+const HOOD_NAMES = {
+  riverside:'Riverside',oldtown:'Old Town',silom:'Silom / Sathon',
+  siam:'Siam',ratchathewi:'Ratchathewi',ari:'Ari',
+  asoke:'Asoke',phrom:'Phrom Phong',thonglor:'Thonglor',
+  ekkamai:'Ekkamai',onnut:'On Nut',latphrao:'Lat Phrao',
+  chatuchak:'Chatuchak'
+};
+
+const map = L.map('map',{scrollWheelZoom:true}).setView([13.737,100.557],13);
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',{attribution:'© Esri',maxZoom:18}).addTo(map);
+
+// BTS/MRT en fond de référence
+const BTS_SUKHUMVIT=[[13.855,100.5846],[13.8353,100.5731],[13.8269,100.5684],[13.8181,100.5632],[13.8111,100.5588],[13.8019,100.5535],[13.7943,100.5495],[13.7792,100.5448],[13.7698,100.5415],[13.763,100.5374],[13.7567,100.5337],[13.7517,100.5314],[13.7462,100.531],[13.7443,100.5422],[13.7434,100.5487],[13.7406,100.5555],[13.7369,100.5604],[13.7303,100.5697],[13.7243,100.5785],[13.7194,100.5856],[13.7122,100.5953],[13.7032,100.6023],[13.6889,100.6092],[13.6697,100.61],[13.6444,100.6003],[13.634,100.5965]];
+const BTS_SILOM=[[13.7465,100.5289],[13.7461,100.531],[13.7401,100.5342],[13.729,100.534],[13.7236,100.5278],[13.7181,100.5198],[13.7187,100.5142],[13.7228,100.5074],[13.7217,100.5024],[13.7176,100.496],[13.7154,100.49],[13.7108,100.4834],[13.7055,100.4794]];
+const MRT_BLUE=[[13.8145,100.5415],[13.8059,100.5737],[13.7890,100.5741],[13.7773,100.5738],[13.7651,100.5709],[13.7577,100.5668],[13.7486,100.5637],[13.7362,100.5607],[13.7257,100.5596],[13.7226,100.5554],[13.7280,100.5458],[13.7282,100.5350],[13.7327,100.5285],[13.7378,100.5167],[13.7411,100.5098],[13.7455,100.5014],[13.7333,100.4926],[13.7248,100.4961],[13.7395,100.4821],[13.7600,100.4780],[13.7761,100.4832],[13.8000,100.4980],[13.8087,100.5282],[13.8145,100.5415]];
+L.polyline(BTS_SUKHUMVIT,{color:'#7DC142',weight:3,opacity:.6}).addTo(map);
+L.polyline(BTS_SILOM,{color:'#7DC142',weight:3,opacity:.6}).addTo(map);
+L.polyline(MRT_BLUE,{color:'#003082',weight:3,opacity:.6}).addTo(map);
+
+const current = Object.fromEntries(Object.entries(HOOD_CENTERS).map(([k,v])=>[k,[...v]]));
+
+function makeIcon(id){
+  const c = HOOD_COLORS[id]||'#888';
+  return L.divIcon({
+    className:'',
+    html:`<div style="width:22px;height:22px;border-radius:50%;background:#fff;border:3px solid ${c};box-shadow:0 2px 8px rgba(0,0,0,.35);cursor:grab"></div>`,
+    iconSize:[22,22],iconAnchor:[11,11]
+  });
+}
+
+Object.keys(HOOD_CENTERS).forEach(id=>{
+  const m = L.marker(HOOD_CENTERS[id],{draggable:true,icon:makeIcon(id)}).addTo(map);
+  m.bindTooltip(`<b>${HOOD_NAMES[id]}</b>`,{permanent:true,direction:'right',offset:[10,0],opacity:1});
+  m.on('drag dragend',e=>{
+    const ll=e.target.getLatLng();
+    current[id]=[+ll.lat.toFixed(4),+ll.lng.toFixed(4)];
+    updateOutput();
+  });
+});
+
+function updateOutput(){
+  const lines=Object.entries(current).map(([id,pos])=>`  ${id}:[${pos[0]},${pos[1]}]`).join(',\n');
+  document.getElementById('out').textContent=`const HOOD_CENTERS={\n${lines}\n};`;
+}
+updateOutput();
+
+function copyCoords(){
+  navigator.clipboard.writeText(document.getElementById('out').textContent).then(()=>{
+    const b=document.querySelector('button');
+    b.textContent='✅ Copié !';setTimeout(()=>b.textContent='📋 Copier',2000);
+  });
+}
+</script>
+</body>
+</html>
