@@ -418,8 +418,8 @@ const HOODS_THAILAND={type:'FeatureCollection',features:[
 const CITY_DATA={bangkok:{geo:HOODS_GEO,transit:true},pattaya:{geo:HOODS_PATTAYA,transit:false},phuket:{geo:HOODS_PHUKET,transit:false},thailand:{geo:HOODS_THAILAND,transit:false}};
 function getCurrentHoods(){return(CITY_DATA[mapCity]?.geo?.features||[]).map(f=>f.properties);}
 
-const BTS_SUKHUMVIT=[[13.8480,100.5694],[13.8385,100.5667],[13.8280,100.5640],[13.8190,100.5610],[13.8120,100.5570],[13.8023,100.5526],[13.7943,100.5495],[13.7792,100.5448],[13.7698,100.5415],[13.7627,100.5384],[13.7565,100.5345],[13.7517,100.5326],[13.7459,100.5339],[13.7443,100.5422],[13.7434,100.5487],[13.7406,100.5555],[13.7369,100.5604],[13.7303,100.5697],[13.7224,100.5810],[13.7183,100.5853],[13.7127,100.5892],[13.7005,100.5997],[13.6922,100.6003],[13.6837,100.5998],[13.6697,100.6050],[13.6444,100.5965],[13.6340,100.5920]];
-const BTS_SILOM=[[13.7465,100.5289],[13.7459,100.5339],[13.7405,100.5392],[13.7290,100.5340],[13.7236,100.5278],[13.7181,100.5198],[13.7187,100.5142],[13.7228,100.5074],[13.7217,100.5024],[13.7176,100.4960],[13.7154,100.4900],[13.7108,100.4834],[13.7055,100.4794]];
+const BTS_SUKHUMVIT=[[13.855,100.5846],[13.8353,100.5731],[13.8269,100.5684],[13.8181,100.5632],[13.8111,100.5588],[13.8019,100.5535],[13.7943,100.5495],[13.7792,100.5448],[13.7698,100.5415],[13.763,100.5374],[13.7567,100.5337],[13.7517,100.5314],[13.7462,100.531],[13.7443,100.5422],[13.7434,100.5487],[13.7406,100.5555],[13.7369,100.5604],[13.7303,100.5697],[13.7243,100.5785],[13.7194,100.5856],[13.7122,100.5953],[13.7032,100.6023],[13.6889,100.6092],[13.6697,100.61],[13.6444,100.6003],[13.634,100.5965]];
+const BTS_SILOM=[[13.7465,100.5289],[13.7461,100.531],[13.7401,100.5342],[13.729,100.534],[13.7236,100.5278],[13.7181,100.5198],[13.7187,100.5142],[13.7228,100.5074],[13.7217,100.5024],[13.7176,100.496],[13.7154,100.49],[13.7108,100.4834],[13.7055,100.4794]];
 const MRT_BLUE=[[13.8145,100.5415],[13.8059,100.5737],[13.7890,100.5741],[13.7773,100.5738],[13.7651,100.5709],[13.7577,100.5668],[13.7486,100.5637],[13.7362,100.5607],[13.7257,100.5596],[13.7226,100.5554],[13.7280,100.5458],[13.7282,100.5350],[13.7327,100.5285],[13.7378,100.5167],[13.7411,100.5098],[13.7455,100.5014],[13.7333,100.4926],[13.7248,100.4961],[13.7395,100.4821],[13.7600,100.4780],[13.7761,100.4832],[13.8000,100.4980],[13.8087,100.5282],[13.8145,100.5415]];
 const BTS_STATIONS=[{pos:[13.7792,100.5448],name:'Ari',line:'bts'},{pos:[13.7627,100.5384],name:'Victory M.',line:'bts'},{pos:[13.7459,100.5339],name:'Siam',line:'bts'},{pos:[13.7443,100.5422],name:'Chit Lom',line:'bts'},{pos:[13.7369,100.5604],name:'Asok',line:'bts'},{pos:[13.7303,100.5697],name:'Phrom Phong',line:'bts'},{pos:[13.7255,100.5793],name:'Thong Lo',line:'bts'},{pos:[13.7202,100.5861],name:'Ekkamai',line:'bts'},{pos:[13.7025,100.6008],name:'On Nut',line:'bts'},{pos:[13.7290,100.5340],name:'Sala Daeng',line:'bts'},{pos:[13.7187,100.5142],name:'Saphan Taksin',line:'bts'},{pos:[13.7577,100.5668],name:'Phra Ram 9',line:'mrt'},{pos:[13.7773,100.5738],name:'Huai Khwang',line:'mrt'},{pos:[13.8059,100.5737],name:'Lat Phrao',line:'mrt'},{pos:[13.7378,100.5167],name:'Hua Lamphong',line:'mrt'},{pos:[13.7226,100.5554],name:'Si Lom',line:'mrt'},{pos:[13.7486,100.5637],name:'Sukhumvit',line:'mrt'}];
 const POI_BKK=[{pos:[13.7267,100.5095],name:'IconSiam'},{pos:[13.7217,100.5262],name:'Mahanakhon'},{pos:[13.7466,100.5393],name:'CentralWorld'},{pos:[13.7024,100.5099],name:'Asiatique'},{pos:[13.7398,100.5139],name:'Chinatown'},{pos:[13.7588,100.4971],name:'Khao San Rd'},{pos:[13.7501,100.4925],name:'Grand Palace'},{pos:[13.7319,100.5418],name:'Lumphini Park'},{pos:[13.7999,100.5524],name:'Chatuchak'}];
@@ -467,10 +467,10 @@ function initMap(){
     const manual=HOOD_CENTERS[h.id];
     const lat=manual?manual[0]:coords.reduce((s,c)=>s+c[1],0)/coords.length;
     const lng=manual?manual[1]:coords.reduce((s,c)=>s+c[0],0)/coords.length;
-    const m=L.circleMarker([lat,lng],{radius:12,fillColor:'#fff',fillOpacity:.95,color:h.border,weight:2.5,interactive:true}).addTo(leafletMap);
+    const m=L.circleMarker([lat,lng],{radius:10,fillColor:'#fff',fillOpacity:.95,color:h.border,weight:2,interactive:true}).addTo(leafletMap);
     m.bindTooltip(h.name,{permanent:true,direction:'right',className:'hlabel',offset:[10,0],interactive:false});
-    m.on('mouseover',()=>{if(!zones.includes(h.id))m.setStyle({fillColor:h.color,fillOpacity:.7});});
-    m.on('mouseout',()=>{if(!zones.includes(h.id))m.setStyle({fillColor:'#fff',fillOpacity:.95});});
+    m.on('mouseover',()=>{if(!zones.includes(h.id))m.setStyle({fillColor:h.color,fillOpacity:.5,weight:2.5});});
+    m.on('mouseout',()=>{if(!zones.includes(h.id))m.setStyle({fillColor:'#fff',fillOpacity:.95,weight:2});});
     m.on('click',()=>toggleZone(h.id));
     hoodLayers[h.id]=m;
   });
@@ -493,8 +493,8 @@ function toggleZone(id){
   if(dontKnow)return;
   const h=getCurrentHoods().find(x=>x.id===id),layer=hoodLayers[id];
   const i=zones.indexOf(id);
-  if(i===-1){zones.push(id);layer.setStyle({fillColor:h.color,fillOpacity:1,weight:3.5,color:h.border});layer.bringToFront();}
-  else{zones.splice(i,1);layer.setStyle({fillColor:'#fff',fillOpacity:.95,weight:2.5,color:h.border});}
+  if(i===-1){zones.push(id);layer.setStyle({fillColor:h.color,fillOpacity:1,weight:3,color:h.border,radius:12});layer.bringToFront();}
+  else{zones.splice(i,1);layer.setStyle({fillColor:'#fff',fillOpacity:.95,weight:2,color:h.border,radius:10});}
   renderTags();
 }
 function getZoneNames(){return zones.map(id=>getCurrentHoods().find(h=>h.id===id)?.name).filter(Boolean);}
@@ -506,7 +506,7 @@ function renderTags(){
   nosel.style.display='none';
   zones.forEach(id=>{const h=getCurrentHoods().find(x=>x.id===id);const d=document.createElement('div');d.className='tag';d.style.cssText=`background:${h.color};border-color:${h.border}`;d.innerHTML=`${h.name}<button onclick="removeZone('${id}')">×</button>`;c.appendChild(d);});
 }
-function removeZone(id){zones=zones.filter(z=>z!==id);const h=getCurrentHoods().find(x=>x.id===id);if(h&&hoodLayers[id])hoodLayers[id].setStyle({fillColor:'#fff',fillOpacity:.95,weight:2.5,color:h.border});renderTags();}
+function removeZone(id){zones=zones.filter(z=>z!==id);const h=getCurrentHoods().find(x=>x.id===id);if(h&&hoodLayers[id])hoodLayers[id].setStyle({fillColor:'#fff',fillOpacity:.95,weight:2,color:h.border,radius:10});renderTags();}
 function toggleDK(){
   dontKnow=!dontKnow;
   document.getElementById('c-dk').classList.toggle('sel',dontKnow);
