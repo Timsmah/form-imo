@@ -6,7 +6,7 @@
 <title>HSC — Votre projet en Thaïlande</title>
 <meta name="description" content="Location ou achat à Bangkok, Pattaya, Phuket — notre équipe vous accompagne.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
 <script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
@@ -31,7 +31,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .step.active{display:block}
 @keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 .qlabel{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px}
-.qtitle{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;line-height:1.25;margin-bottom:6px;color:var(--dark)}
+.qtitle{font-family:'DM Serif Display',serif;font-size:22px;font-weight:700;line-height:1.25;margin-bottom:6px;color:var(--dark)}
 .qdesc{font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.5}
 .opt-badge{display:inline-block;background:#f0f0f0;color:var(--muted);font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;margin-left:6px;vertical-align:middle;border:1px solid var(--border)}
 .grid{display:grid;gap:10px}
@@ -61,7 +61,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .bigcard.sel .bs{color:rgba(255,255,255,.5)}
 .slider-box{margin:0 0 22px}
 .slider-disp{text-align:center;margin-bottom:20px;padding:20px;background:var(--bg);border-radius:var(--r)}
-.slider-disp .amt{font-family:'Playfair Display',serif;font-size:34px;font-weight:700;color:var(--dark)}
+.slider-disp .amt{font-family:'DM Serif Display',serif;font-size:34px;font-weight:700;color:var(--dark)}
 .slider-disp .unit{font-size:14px;color:var(--muted);margin-left:3px}
 .slider-disp .eq{font-size:13px;color:var(--muted);margin-top:4px;font-weight:600}
 input[type=range]{width:100%;-webkit-appearance:none;height:5px;border-radius:3px;background:var(--border);outline:none;cursor:pointer}
@@ -92,7 +92,7 @@ input:focus,textarea:focus{box-shadow:0 0 0 2px var(--dark)}
 .cal-choice-card{border-radius:18px;padding:32px 24px;background:var(--dark);border:none;cursor:pointer;text-align:center;box-shadow:0 6px 28px rgba(0,0,0,.16);transition:transform .18s,box-shadow .18s;margin-top:8px}
 .cal-choice-card:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.24)}
 .cal-ci{font-size:44px;margin-bottom:14px}
-.cal-ct{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:#fff;margin-bottom:6px}
+.cal-ct{font-family:'DM Serif Display',serif;font-size:19px;font-weight:700;color:#fff;margin-bottom:6px}
 .cal-cs{font-size:13px;color:rgba(255,255,255,.55);line-height:1.6}
 .cal-skip{display:block;text-align:center;margin-top:22px;background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:8px 16px;text-decoration:underline;text-underline-offset:3px;font-family:inherit}
 textarea{min-height:110px;resize:vertical}
@@ -109,7 +109,7 @@ textarea{min-height:110px;resize:vertical}
 .success{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:80vh;padding:40px 28px;text-align:center}
 .success.active{display:flex}
 .s-icon{width:72px;height:72px;background:var(--dark);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;color:#fff;margin-bottom:24px}
-.success h2{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;margin-bottom:10px;color:var(--dark)}
+.success h2{font-family:'DM Serif Display',serif;font-size:28px;font-weight:700;margin-bottom:10px;color:var(--dark)}
 .success p{font-size:15px;color:var(--muted);line-height:1.65}
 </style>
 </head>
@@ -320,7 +320,7 @@ textarea{min-height:110px;resize:vertical}
     <div class="card" id="visa-non" onclick="pickVisa('non')"><div class="chk"></div><div class="card-txt">Non</div></div>
   </div>
   <div id="visa-aide-panel" style="display:none;margin-top:24px">
-    <div style="font-size:16px;font-weight:700;color:var(--dark);margin-bottom:12px;line-height:1.35;font-family:'Playfair Display',serif">Pensez-vous avoir besoin d'aide pour le visa ?</div>
+    <div style="font-size:16px;font-weight:700;color:var(--dark);margin-bottom:12px;line-height:1.35;font-family:'DM Serif Display',serif">Pensez-vous avoir besoin d'aide pour le visa ?</div>
     <div class="grid c2">
       <div class="card" id="aide-oui" onclick="pickAideVisa('oui')"><div class="chk"></div><div class="card-txt">Oui</div></div>
       <div class="card" id="aide-non" onclick="pickAideVisa('non')"><div class="chk"></div><div class="card-txt">Non</div></div>
