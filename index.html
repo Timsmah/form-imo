@@ -77,7 +77,7 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.1)}
 .map-legend{display:flex;gap:14px;justify-content:center;margin:8px 0 12px;font-size:11px;font-weight:600;color:var(--muted)}
 .legend-item{display:flex;align-items:center;gap:5px}
 .legend-line{display:inline-block;width:22px;height:3.5px;border-radius:2px}
-.tags{display:flex;flex-wrap:wrap;gap:8px;min-height:28px;margin-top:12px;align-items:center}
+.tags{display:flex;flex-wrap:wrap;gap:8px;min-height:32px;margin-bottom:10px;align-items:center}
 .tag{padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;display:flex;align-items:center;gap:5px;color:#111;border:1.5px solid rgba(0,0,0,.12)}
 .tag button{background:none;border:none;cursor:pointer;font-size:14px;line-height:1;padding:0;opacity:.5;color:inherit}
 .no-sel{font-size:13px;color:var(--muted);font-style:italic}
@@ -235,12 +235,12 @@ textarea{min-height:110px;resize:vertical}
   <div class="qlabel">Question <span id="q8n">8</span> / <span class="tot"></span><span class="opt-badge">Optionnel</span></div>
   <div class="qtitle">Quartiers qui vous intéressent ?</div>
   <div class="qdesc">Touchez les zones sur la carte pour les sélectionner</div>
+  <div class="tags" id="tags"><span class="no-sel" id="nosel">Aucun quartier sélectionné</span></div>
   <div id="city-map"></div>
   <div class="map-legend" id="map-legend">
     <div class="legend-item"><span class="legend-line" style="background:#7DC142;height:4px;border-radius:2px"></span> BTS Skytrain</div>
     <div class="legend-item"><span class="legend-line" style="background:#003082;height:4px;border-radius:2px"></span> MRT Blue Line</div>
   </div>
-  <div class="tags" id="tags"><span class="no-sel" id="nosel">Aucun quartier sélectionné</span></div>
   <div style="margin-top:14px">
     <div class="card" id="c-dk" onclick="toggleDK()">
       <div class="chk"></div>
@@ -421,7 +421,7 @@ function getCurrentHoods(){return(CITY_DATA[mapCity]?.geo?.features||[]).map(f=>
 const BTS_SUKHUMVIT=[[13.855,100.5846],[13.8353,100.5731],[13.8269,100.5684],[13.8181,100.5632],[13.8111,100.5588],[13.8019,100.5535],[13.7943,100.5495],[13.7792,100.5448],[13.7698,100.5415],[13.763,100.5374],[13.7567,100.5337],[13.7517,100.5314],[13.7462,100.531],[13.7443,100.5422],[13.7434,100.5487],[13.7406,100.5555],[13.7369,100.5604],[13.7303,100.5697],[13.7243,100.5785],[13.7194,100.5856],[13.7122,100.5953],[13.7032,100.6023],[13.6889,100.6092],[13.6697,100.61],[13.6444,100.6003],[13.634,100.5965]];
 const BTS_SILOM=[[13.7465,100.5289],[13.7461,100.531],[13.7401,100.5342],[13.729,100.534],[13.7236,100.5278],[13.7181,100.5198],[13.7187,100.5142],[13.7228,100.5074],[13.7217,100.5024],[13.7176,100.496],[13.7154,100.49],[13.7108,100.4834],[13.7055,100.4794]];
 const MRT_BLUE=[[13.8145,100.5415],[13.8059,100.5737],[13.7890,100.5741],[13.7773,100.5738],[13.7651,100.5709],[13.7577,100.5668],[13.7486,100.5637],[13.7362,100.5607],[13.7257,100.5596],[13.7226,100.5554],[13.7280,100.5458],[13.7282,100.5350],[13.7327,100.5285],[13.7378,100.5167],[13.7411,100.5098],[13.7455,100.5014],[13.7333,100.4926],[13.7248,100.4961],[13.7395,100.4821],[13.7600,100.4780],[13.7761,100.4832],[13.8000,100.4980],[13.8087,100.5282],[13.8145,100.5415]];
-const BTS_STATIONS=[{pos:[13.7792,100.5448],name:'Ari',line:'bts'},{pos:[13.7627,100.5384],name:'Victory M.',line:'bts'},{pos:[13.7459,100.5339],name:'Siam',line:'bts'},{pos:[13.7443,100.5422],name:'Chit Lom',line:'bts'},{pos:[13.7369,100.5604],name:'Asok',line:'bts'},{pos:[13.7303,100.5697],name:'Phrom Phong',line:'bts'},{pos:[13.7255,100.5793],name:'Thong Lo',line:'bts'},{pos:[13.7202,100.5861],name:'Ekkamai',line:'bts'},{pos:[13.7025,100.6008],name:'On Nut',line:'bts'},{pos:[13.7290,100.5340],name:'Sala Daeng',line:'bts'},{pos:[13.7187,100.5142],name:'Saphan Taksin',line:'bts'},{pos:[13.7577,100.5668],name:'Phra Ram 9',line:'mrt'},{pos:[13.7773,100.5738],name:'Huai Khwang',line:'mrt'},{pos:[13.8059,100.5737],name:'Lat Phrao',line:'mrt'},{pos:[13.7378,100.5167],name:'Hua Lamphong',line:'mrt'},{pos:[13.7226,100.5554],name:'Si Lom',line:'mrt'},{pos:[13.7486,100.5637],name:'Sukhumvit',line:'mrt'}];
+const BTS_STATIONS=[{pos:[13.7792,100.5448],name:'Ari',line:'bts'},{pos:[13.7627,100.5384],name:'Victory M.',line:'bts'},{pos:[13.7459,100.5339],name:'Siam',line:'bts'},{pos:[13.7443,100.5422],name:'Chit Lom',line:'bts'},{pos:[13.7369,100.5604],name:'Asok',line:'bts'},{pos:[13.7303,100.5697],name:'Phrom Phong',line:'bts'},{pos:[13.7255,100.5793],name:'Thong Lo',line:'bts'},{pos:[13.7202,100.5861],name:'Ekkamai',line:'bts'},{pos:[13.7032,100.6023],name:'On Nut',line:'bts'},{pos:[13.7290,100.5340],name:'Sala Daeng',line:'bts'},{pos:[13.7187,100.5142],name:'Saphan Taksin',line:'bts'},{pos:[13.7577,100.5668],name:'Phra Ram 9',line:'mrt'},{pos:[13.7773,100.5738],name:'Huai Khwang',line:'mrt'},{pos:[13.8059,100.5737],name:'Lat Phrao',line:'mrt'},{pos:[13.7378,100.5167],name:'Hua Lamphong',line:'mrt'},{pos:[13.7226,100.5554],name:'Si Lom',line:'mrt'},{pos:[13.7486,100.5637],name:'Sukhumvit',line:'mrt'}];
 const POI_BKK=[{pos:[13.7267,100.5095],name:'IconSiam'},{pos:[13.7217,100.5262],name:'Mahanakhon'},{pos:[13.7466,100.5393],name:'CentralWorld'},{pos:[13.7024,100.5099],name:'Asiatique'},{pos:[13.7398,100.5139],name:'Chinatown'},{pos:[13.7588,100.4971],name:'Khao San Rd'},{pos:[13.7501,100.4925],name:'Grand Palace'},{pos:[13.7319,100.5418],name:'Lumphini Park'},{pos:[13.7999,100.5524],name:'Chatuchak'}];
 const HOOD_CENTERS={
   riverside:[13.7387,100.4965],
