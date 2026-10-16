@@ -474,14 +474,16 @@ let lastMapCity=null;
 
 function steps(){const s=[0,1,2,3,4,5];if(type==='louer')s.push(6,7);if(mapCity)s.push(8);s.push(9,10,12,11);return s;}
 
+const MAP_VIEW={bangkok:[[13.737,100.557],12],pattaya:[[12.928,100.877],12],phuket:[[7.888,98.298],11],thailand:[[13.5,101.0],6]};
 function initMap(){
   const city=CITY_DATA[mapCity];if(!city)return;
   if(mapInited&&lastMapCity===mapCity){setTimeout(()=>leafletMap.invalidateSize(),80);return;}
   if(leafletMap){leafletMap.remove();leafletMap=null;}
   hoodLayers={};zones=[];dontKnow=false;renderTags();
   mapInited=true;lastMapCity=mapCity;
+  const [center,zoom]=MAP_VIEW[mapCity]||[[13.737,100.557],12];
   document.getElementById('city-map').style.height=mapCity==='thailand'?'480px':'400px';
-  leafletMap=L.map('city-map',{scrollWheelZoom:false,tap:true,attributionControl:true,zoomControl:true}).setView([13.755,100.557],11);
+  leafletMap=L.map('city-map',{scrollWheelZoom:false,tap:true,attributionControl:true,zoomControl:true}).setView(center,zoom);
   L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',{attribution:'© Esri',maxZoom:16}).addTo(leafletMap);
   const legend=document.getElementById('map-legend');
   if(city.transit){
@@ -508,7 +510,7 @@ function initMap(){
     m.on('click',()=>toggleZone(h.id));
     hoodLayers[h.id]=m;
   });
-  leafletMap.setView([13.737,100.557],12);
+  setTimeout(()=>leafletMap.invalidateSize(),120);
 }
 
 function toggleZone(id){
