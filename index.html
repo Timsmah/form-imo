@@ -15,7 +15,12 @@
 :root{--dark:#9B7045;--dark2:#7A5030;--bg:#FDFAF6;--card:#ffffff;--txt:#2A1A0A;--muted:#A08870;--border:#E8DBCA;--r:14px}
 html{scroll-behavior:smooth}
 body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;display:flex;justify-content:center}
-.wrap{width:100%;max-width:480px;min-height:100vh;background:var(--card);display:flex;flex-direction:column}
+.wrap{width:100%;max-width:480px;min-height:100vh;background:var(--card);display:flex;flex-direction:column;position:relative}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ldr-spin{width:48px;height:48px;border:3px solid var(--border);border-top-color:var(--dark);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:28px}
+#analysing-loader{display:none;position:absolute;inset:0;background:var(--bg);z-index:9999;flex-direction:column;align-items:center;justify-content:center;padding:40px 32px;text-align:center}
+.ldr-msg{font-family:'DM Serif Display',serif;font-size:21px;color:var(--dark);margin-bottom:8px}
+.ldr-sub{font-size:13px;color:var(--muted);line-height:1.5}
 .hdr{position:relative;background:#F7F1E8;padding:22px 24px 18px;border-bottom:1.5px solid var(--border);flex-shrink:0;display:flex;flex-direction:column;align-items:center;text-align:center;gap:9px}
 .lang-btn{position:absolute;top:14px;right:14px;background:rgba(155,112,69,.12);border:1.5px solid rgba(155,112,69,.3);color:var(--dark);font-size:13px;font-weight:700;letter-spacing:.04em;padding:6px 14px;border-radius:20px;cursor:pointer;transition:all .18s;font-family:inherit;line-height:1.3}
 .lang-btn:hover{background:var(--dark);color:#FDF8F2;border-color:var(--dark)}
@@ -116,9 +121,21 @@ textarea{min-height:110px;resize:vertical}
 .success h2{font-family:'DM Serif Display',serif;font-size:28px;font-weight:700;margin-bottom:10px;color:var(--dark)}
 .success p{font-size:15px;color:var(--muted);line-height:1.65}
 </style>
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init','1429509551850864');
+fbq('track','PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1429509551850864&ev=PageView&noscript=1"/></noscript>
 </head>
 <body>
 <div class="wrap">
+
+<div id="analysing-loader">
+  <div class="ldr-spin"></div>
+  <div class="ldr-msg" id="ldrMsg"></div>
+  <div class="ldr-sub" id="ldrSub"></div>
+</div>
 
 <div class="hdr">
   <button class="lang-btn" id="lang-toggle" onclick="toggleLang()">🇬🇧 EN</button>
@@ -596,7 +613,7 @@ function refreshNav(){
   updateLabels();
 }
 
-function showStep(idx){
+function _doShowStep(idx){
   const S=steps();
   document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
   document.getElementById('s'+S[idx]).classList.add('active');
@@ -605,6 +622,24 @@ function showStep(idx){
   if(S[idx]===8)setTimeout(initMap,60);
   refreshNav();
   window.scrollTo({top:0,behavior:'smooth'});
+}
+function showAnalysingLoader(cb){
+  const fr=[['Analyse de vos réponses…','Nous étudions votre projet en détail'],['Formulation de votre profil…','Matching en cours'],['Biens correspondants trouvés ✓','Préparation de votre espace']];
+  const en=[['Analysing your answers…','Reviewing your project in detail'],['Building your profile…','Matching in progress'],['Properties matched ✓','Preparing your space']];
+  const msgs=lang==='fr'?fr:en;
+  const loader=document.getElementById('analysing-loader');
+  const msgEl=document.getElementById('ldrMsg');
+  const subEl=document.getElementById('ldrSub');
+  loader.style.display='flex';
+  msgEl.textContent=msgs[0][0];subEl.textContent=msgs[0][1];
+  let i=0;
+  const iv=setInterval(()=>{i++;if(i<msgs.length){msgEl.textContent=msgs[i][0];subEl.textContent=msgs[i][1];}},1000);
+  setTimeout(()=>{clearInterval(iv);loader.style.display='none';cb();},3000);
+}
+function showStep(idx){
+  const S=steps();
+  if(S[idx]===10){showAnalysingLoader(()=>_doShowStep(idx));return;}
+  _doShowStep(idx);
 }
 
 function next(){
@@ -621,6 +656,7 @@ function bookAndSubmit(){submittedName=document.getElementById('nom')?.value?.tr
 function openCalendly(){const url='https://calendly.com/timthai2024/appel-relocalisation-thailande'+(submittedName?'?name='+encodeURIComponent(submittedName):'');if(window.Calendly)Calendly.initPopupWidget({url});else window.open(url,'_blank');}
 
 function submit(){
+  if(typeof fbq==='function')fbq('track','Lead');
   const q=s=>{if(s===7&&document.getElementById('dur-autre-card')?.classList.contains('sel')){const m=document.getElementById('dur-mois').value;return m?m+' mois':'Autre';}const el=document.querySelector(`#s${s} .card.sel .card-txt`);return(el?.dataset?.fr||el?.textContent?.trim())||'';};
   const quartiers=dontKnow?'Je ne sais pas encore':(zones.length?getZoneNames().join(', '):'Non précisé');
   const visaLabel=visaStatus==='oui'?'Oui':'Non';
